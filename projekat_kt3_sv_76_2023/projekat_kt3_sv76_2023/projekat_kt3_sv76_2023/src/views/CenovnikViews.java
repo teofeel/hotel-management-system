@@ -66,7 +66,7 @@ public class CenovnikViews extends JFrame{
 	}
 	
 	private JPanel cenovniciPanel() {
-JPanel cenovniciPanel = new JPanel(new BorderLayout());
+		JPanel cenovniciPanel = new JPanel(new BorderLayout());
         
         cenovniciPanel.add(new JLabel("Cenovnici"), BorderLayout.NORTH);
         
@@ -127,54 +127,81 @@ JPanel cenovniciPanel = new JPanel(new BorderLayout());
         cenovniciPanel.add(scrollPane, BorderLayout.CENTER);
         
         return cenovniciPanel;
-		
-		/*JPanel cenovniciPanel = new JPanel();
-		
-		cenovniciPanel.add(new JLabel("Cenovnici"));
-		
-		if(CenovnikManager.cenovnici.size()==0)
-			return cenovniciPanel;
-		
-		JPanel cenovniciListaPanel = new JPanel();
-		
-		for(Cenovnik c : CenovnikManager.cenovnici) {
-			JLabel vazenjeOdLabel = new JLabel(c.getVaziOd().toString());
-			JLabel vazenjeDoLabel = new JLabel(c.getVaziDo().toString());
-			
-			JLabel aktivanLabel = new JLabel(c.getAktivan() ? "Aktivan":"Neaktivan");
-			
-			JButton izmenaButton = new JButton("Izmeni");
-			izmenaButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					new CenovnikFrame(c);
-				}
-			});
-			
-			JButton deaktivirajButton = new JButton(c.getAktivan() ? "Deaktiviraj" : "Aktiviraj");
-			deaktivirajButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					c.setAktivan(!c.getAktivan());
-					JOptionPane.showMessageDialog(cenovniciListaPanel, "Izmenjena aktivnost cenovnika");
-				}
-			});
-			
-			cenovniciListaPanel.add(vazenjeOdLabel);
-			cenovniciListaPanel.add(vazenjeDoLabel);
-			cenovniciListaPanel.add(aktivanLabel);
-			cenovniciListaPanel.add(izmenaButton);
-			cenovniciListaPanel.add(deaktivirajButton);
-		}
-		
-		cenovniciPanel.add(cenovniciListaPanel);
-		return cenovniciPanel;*/
 	}
 	
 	
 	
 	private JPanel definisiCenovnikPanel() {
-		JPanel definisiCenovnikPanel = new JPanel();
+		 	JPanel definisiCenovnikPanel = new JPanel();
+		    definisiCenovnikPanel.setLayout(new GridBagLayout());
+		    GridBagConstraints gbc = new GridBagConstraints();
+		    gbc.insets = new Insets(5, 5, 5, 5);
+		    gbc.anchor = GridBagConstraints.WEST;
+
+		    JLabel titleLabel = new JLabel("Definisi");
+		    gbc.gridx = 0;
+		    gbc.gridy = 0;
+		    gbc.gridwidth = 2;
+		    definisiCenovnikPanel.add(titleLabel, gbc);
+		    gbc.gridwidth = 1;
+
+		    gbc.gridy++;
+		    gbc.gridx = 0;
+		    definisiCenovnikPanel.add(new JLabel("Važi od:"), gbc);
+
+		    JDateChooser vaziOdPicker = new JDateChooser();
+		    vaziOdPicker.setDate(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		    gbc.gridx = 1;
+		    definisiCenovnikPanel.add(vaziOdPicker, gbc);
+
+		    gbc.gridy++;
+		    gbc.gridx = 0;
+		    definisiCenovnikPanel.add(new JLabel("Važi do:"), gbc);
+
+		    JDateChooser vaziDoPicker = new JDateChooser();
+		    vaziDoPicker.setDate(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+		    gbc.gridx = 1;
+		    definisiCenovnikPanel.add(vaziDoPicker, gbc);
+
+		    gbc.gridy++;
+		    gbc.gridx = 0;
+		    definisiCenovnikPanel.add(new JLabel("Status:"), gbc);
+
+		    JComboBox<String> aktivanBox = new JComboBox<>();
+		    aktivanBox.addItem("Aktivan");
+		    aktivanBox.addItem("Neaktivan");
+		    gbc.gridx = 1;
+		    definisiCenovnikPanel.add(aktivanBox, gbc);
+
+		    gbc.gridy++;
+		    gbc.gridx = 0;
+		    gbc.gridwidth = 2;
+		    gbc.anchor = GridBagConstraints.CENTER;
+
+		    JButton dodajButton = new JButton("Dodaj");
+		    dodajButton.addActionListener(new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		            LocalDate vaziOd = LocalDate.ofInstant(vaziOdPicker.getDate().toInstant(), ZoneId.systemDefault());
+		            LocalDate vaziDo = LocalDate.ofInstant(vaziDoPicker.getDate().toInstant(), ZoneId.systemDefault());
+
+		            if (vaziDo.isBefore(vaziOd)) {
+		                JOptionPane.showMessageDialog(definisiCenovnikPanel, "Datum 'Važi do' mora biti nakon datuma 'Važi od'.", "Greška", JOptionPane.ERROR_MESSAGE);
+		                return;
+		            }
+
+		            String aktivanStr = (String) aktivanBox.getSelectedItem();
+		            boolean aktivan = aktivanStr.equals("Aktivan");
+
+		            String poruka = AdminManager.getInstance().definisanjeCenovnika(vaziOd.toString(), vaziDo.toString(), aktivan);
+		            JOptionPane.showMessageDialog(definisiCenovnikPanel, poruka);
+		        }
+		    });
+
+		    definisiCenovnikPanel.add(dodajButton, gbc);
+
+		    return definisiCenovnikPanel;
+		/*JPanel definisiCenovnikPanel = new JPanel();
 		
 		definisiCenovnikPanel.add(new JLabel("Definisi"));
 		
@@ -214,7 +241,7 @@ JPanel cenovniciPanel = new JPanel(new BorderLayout());
 		definisiCenovnikPanel.add(aktivanBox);
 		definisiCenovnikPanel.add(dodajButton);
 		
-		return definisiCenovnikPanel;
+		return definisiCenovnikPanel;*/
 	}
 	
 	private JPanel uslugePanel() {

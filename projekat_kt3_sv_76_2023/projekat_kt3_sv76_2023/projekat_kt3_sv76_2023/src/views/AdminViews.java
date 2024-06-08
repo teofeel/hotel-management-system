@@ -215,13 +215,7 @@ public class AdminViews extends JFrame{
 	        gbc.anchor = GridBagConstraints.WEST;
 	        panel.add(component, gbc);
 	}
-	private void addComponent(JPanel panel, JComponent component, GridBagConstraints gbc, int y, int width) {
-        gbc.gridx = 0;
-        gbc.gridy = y;
-        gbc.gridwidth = width;
-        gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(component, gbc);
-    }
+	
 	 
 	private void izmeniZaposlenog(Zaposleni zaposleni) {
 		JFrame izmenaFrame = new JFrame();
@@ -633,31 +627,52 @@ public class AdminViews extends JFrame{
     }
     
     private JPanel dodajSobuPanel() {
-    	JPanel dodajSobuPanel = new JPanel();
-    	JTextField sifraSobeField = new JTextField(5);
-    	
-    	JComboBox<TipSobeEnum> tipSobeBox = new JComboBox<TipSobeEnum>();
-    	tipSobeBox.addItem(TipSobeEnum.JEDNOKREVETNA);
-    	tipSobeBox.addItem(TipSobeEnum.DVOKREVETNA);
-    	tipSobeBox.addItem(TipSobeEnum.ODVOKREVETNA_DVA);
-    	tipSobeBox.addItem(TipSobeEnum.TROKREVETNA);
-    	
-    	JButton dodajButton = new JButton("Dodaj");
-    	
-    	
-    	dodajButton.addActionListener(new ActionListener() {
-    		@Override
-        	public void actionPerformed(ActionEvent e) {
-				String poruka = AdminManager.getInstance().dodajSobu(sifraSobeField.getText(),(TipSobeEnum) tipSobeBox.getSelectedItem());
-				JOptionPane.showMessageDialog(dodajSobuPanel, poruka);
-    		}
-    	});
-    	
-    	dodajSobuPanel.add(sifraSobeField);
-    	dodajSobuPanel.add(tipSobeBox);
-    	dodajSobuPanel.add(dodajButton);
-    	
-    	return dodajSobuPanel;
+    	JPanel dodajSobuPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+       
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        dodajSobuPanel.add(new JLabel("Sifra Sobe:"), gbc);
+
+        gbc.gridx = 1;
+        JTextField sifraSobeField = new JTextField(5);
+        dodajSobuPanel.add(sifraSobeField, gbc);
+
+        
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        dodajSobuPanel.add(new JLabel("Tip Sobe:"), gbc);
+
+        gbc.gridx = 1;
+        JComboBox<TipSobeEnum> tipSobeBox = new JComboBox<>();
+        tipSobeBox.addItem(TipSobeEnum.JEDNOKREVETNA);
+        tipSobeBox.addItem(TipSobeEnum.DVOKREVETNA);
+        tipSobeBox.addItem(TipSobeEnum.ODVOKREVETNA_DVA);
+        tipSobeBox.addItem(TipSobeEnum.TROKREVETNA);
+        dodajSobuPanel.add(tipSobeBox, gbc);
+
+       
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JButton dodajButton = new JButton("Dodaj");
+        dodajSobuPanel.add(dodajButton, gbc);
+
+        
+        dodajButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String sifraSobe = sifraSobeField.getText();
+                TipSobeEnum tipSobe = (TipSobeEnum) tipSobeBox.getSelectedItem();
+                String poruka = AdminManager.getInstance().dodajSobu(sifraSobe, tipSobe);
+                JOptionPane.showMessageDialog(dodajSobuPanel, poruka);
+            }
+        });
+
+        return dodajSobuPanel;
     }
 	
     private JPanel sobePanel() {

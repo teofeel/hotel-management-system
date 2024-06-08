@@ -64,36 +64,44 @@ public class SobaricaViews extends JFrame{
 	}
 	
 	private JPanel pregledSobaPanel() {
-		JPanel pregledSobaPanel = new JPanel();
-		pregledSobaPanel.add(new JLabel("Pregled soba"));
-		
-		HashMap<Integer, Soba> sobe = SobaricaManager.sobarice.get(this.korisnickoIme).getDodeljeneSobe();
-		
-		
-		JPanel sobePanel = new JPanel(new GridLayout(sobe.values().size(),2));
-		
-		for(Soba soba:sobe.values()) {
-			JLabel sifraSobe = new JLabel(Integer.toString(soba.getSifra()));
-			JButton srediSobu = new JButton("Sredjena soba");
-			
-			sobePanel.add(sifraSobe);
-			sobePanel.add(srediSobu);
-			
-			srediSobu.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					String poruka = SobaricaManager.getInstance().sredjenaSoba(soba, SobaricaManager.sobarice.get(korisnickoIme));
-					
-					JOptionPane.showMessageDialog(pregledSobaPanel, poruka);
-					
-					sobePanel.revalidate(); 
-					sobePanel.repaint();
-				}
-			});
-		}
-		
-		pregledSobaPanel.add(sobePanel);
-		return pregledSobaPanel;
+		JPanel pregledSobaPanel = new JPanel(new BorderLayout());
+	    pregledSobaPanel.add(new JLabel("Pregled soba"), BorderLayout.NORTH);
+
+	    HashMap<Integer, Soba> sobe = SobaricaManager.sobarice.get(korisnickoIme).getDodeljeneSobe();
+	    
+	    JPanel sobePanel = new JPanel(new GridBagLayout());
+	    GridBagConstraints gbc = new GridBagConstraints();
+	    gbc.insets = new Insets(5, 5, 5, 5);
+	    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+	    int row = 0;
+	    for (Soba soba : sobe.values()) {
+	        gbc.gridy = row++;
+	        gbc.gridx = 0;
+	        sobePanel.add(new JLabel(Integer.toString(soba.getSifra())), gbc);
+
+	        gbc.gridx = 1;
+	        JButton srediSobuButton = new JButton("Sredjena soba");
+	        sobePanel.add(srediSobuButton, gbc);
+
+	        srediSobuButton.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                String poruka = SobaricaManager.getInstance().sredjenaSoba(soba, SobaricaManager.sobarice.get(korisnickoIme));
+	                JOptionPane.showMessageDialog(pregledSobaPanel, poruka);
+	                sobePanel.revalidate();
+	                sobePanel.repaint();
+	            }
+	        });
+	    }
+
+	    JScrollPane scrollPane = new JScrollPane(sobePanel);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+	    pregledSobaPanel.add(scrollPane, BorderLayout.CENTER);
+
+	    return pregledSobaPanel;
 	}
 	
 	private class NavbarButtonListener implements ActionListener {

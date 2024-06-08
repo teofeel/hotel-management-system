@@ -7,7 +7,6 @@ import controller.*;
 import manager.*;
 
 public class LoginView extends JFrame{
-    // Components of the Form
     private Container container;
     private JLabel userLabel;
     private JTextField userTextField;
