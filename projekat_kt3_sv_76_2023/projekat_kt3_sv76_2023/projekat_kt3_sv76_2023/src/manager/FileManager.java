@@ -46,8 +46,8 @@ public class FileManager {
 	public void ocistiPodatkeAplikacija() {
 		AdminManager.admini.clear();
 		CenovnikManager.cenovnici.clear();
-		DodatnoManager.rezervacije.clear();
-		DodatnoManager.sobe.clear();
+		RezervacijaManager.rezervacije.clear();
+		SobaManager.sobe.clear();
 		GostManager.gosti.clear();
 		RecepcionerManager.recepcioneri.clear();
 		SobaricaManager.sobarice.clear();
@@ -60,19 +60,17 @@ public class FileManager {
 	            new SimpleFileVisitor<>() {
 
 	                @Override
-	                public FileVisitResult postVisitDirectory(Path dir,
-	                                                          IOException exc)
-	                                                          throws IOException {
-	                    Files.delete(dir);
-	                    return FileVisitResult.CONTINUE;
+	                public FileVisitResult postVisitDirectory(Path dir,IOException exc)
+	                	throws IOException {
+	                    	Files.delete(dir);
+	                    	return FileVisitResult.CONTINUE;
 	                }
 
 	                @Override
-	                public FileVisitResult visitFile(Path file,
-	                                                 BasicFileAttributes attrs)
-	                                                 throws IOException {
-	                    Files.delete(file);
-	                    return FileVisitResult.CONTINUE;
+	                public FileVisitResult visitFile(Path file,BasicFileAttributes attrs)
+	                	throws IOException {
+	                    	Files.delete(file);
+	                    	return FileVisitResult.CONTINUE;
 	                }
 	            }
 	        );
@@ -112,7 +110,7 @@ public class FileManager {
 			FileWriter writer = this.getFileWriter("rezervacije.csv");
 			
 			writer.write("Email,Status,Tip Sobe,Soba,Datum Dolaska,Datum Odlaska,Broj Osoba,Dodatne Usluge,Cena"+"\n");
-			for(Rezervacija rez : DodatnoManager.rezervacije) {
+			for(Rezervacija rez : RezervacijaManager.rezervacije) {
 				String dodatneUsluge = "";
 				for(DodatneUsluge du:rez.getUsluge()) {
 					dodatneUsluge += du.getNaziv()+"|";
@@ -143,7 +141,7 @@ public class FileManager {
 			
 			writer.write("Sifra,Tip Sobe,Status,Dodaci"+"\n");
 			
-			for(Soba s:DodatnoManager.sobe.values()) {
+			for(Soba s:SobaManager.sobe.values()) {
 				String dodaci = "";
 				
 				for(String dodatak:s.getAmenities()) {
@@ -328,10 +326,10 @@ public class FileManager {
 				
 				Soba s = null;
 				if (line.split(",")[3]!="") {
-					if(!DodatnoManager.sobe.containsKey(Integer.parseInt(line.split(",")[3])))
+					if(!SobaManager.sobe.containsKey(Integer.parseInt(line.split(",")[3])))
 						s = new Soba(Integer.parseInt(line.split(",")[3]));
 					else
-						s = DodatnoManager.sobe.get(Integer.parseInt(line.split(",")[3]));
+						s = SobaManager.sobe.get(Integer.parseInt(line.split(",")[3]));
 				}
 				
 				LocalDate datumDolaska = LocalDate.parse(line.split(",")[4]);
@@ -352,7 +350,7 @@ public class FileManager {
 				
 				Rezervacija rez = new Rezervacija(korisnickoIme,statusRez,ts,s, brOsoba, datumDolaska, datumOdlaska, du, cena);
 				
-				DodatnoManager.rezervacije.add(rez);
+				RezervacijaManager.rezervacije.add(rez);
 			}
 			br.close();
 			return true;
@@ -386,7 +384,7 @@ public class FileManager {
 				}
 				
 				Soba soba = new Soba(sifraSobe, ts, statusSobe, amenities);
-				DodatnoManager.sobe.put(sifraSobe, soba);
+				SobaManager.sobe.put(sifraSobe, soba);
 			}
 			br.close();
 			return true;
@@ -453,7 +451,7 @@ public class FileManager {
 			br.readLine();
 			String line;
 			while((line=br.readLine())!=null) {
-				sob.addSoba(DodatnoManager.sobe.get(Integer.parseInt(line)));
+				sob.addSoba(SobaManager.sobe.get(Integer.parseInt(line)));
 			}
 			br.close();
 			return true;

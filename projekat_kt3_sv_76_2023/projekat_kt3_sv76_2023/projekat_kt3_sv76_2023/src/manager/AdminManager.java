@@ -281,18 +281,18 @@ public class AdminManager {
 			int sifraSobe = Integer.parseInt(sifra);
 			int novaSifraSobe = Integer.parseInt(novaSifra);
 			
-			if(!DodatnoManager.sobe.containsKey(sifraSobe)) throw new Exception("Sifra sobe ne postoji");
+			if(!SobaManager.sobe.containsKey(sifraSobe)) throw new Exception("Sifra sobe ne postoji");
 			
-			if(sifraSobe!=novaSifraSobe && DodatnoManager.sobe.containsKey(novaSifraSobe))
+			if(sifraSobe!=novaSifraSobe && SobaManager.sobe.containsKey(novaSifraSobe))
 				throw new Exception("Nova sifra sobe je vec registrovana u sistemu");
 			
-			Soba soba = DodatnoManager.sobe.get(sifraSobe);
+			Soba soba = SobaManager.sobe.get(sifraSobe);
 			
 			soba.setSifra(novaSifraSobe);
 			soba.setTipSobe(CenovnikManager.cenovnici.get(0).getTipoviSoba().get(tipSobe));
 			
-			DodatnoManager.sobe.remove(sifraSobe);
-			DodatnoManager.sobe.put(novaSifraSobe, soba);
+			SobaManager.sobe.remove(sifraSobe);
+			SobaManager.sobe.put(novaSifraSobe, soba);
 			
 			return "Podaci uspesno izmenjeni";
 		}catch(Exception e) {
@@ -336,16 +336,15 @@ public class AdminManager {
 			
 			if(sifraSobe.equals("")) throw new Exception("Sifra soba nije navedena");
 			
-			if(!DodatnoManager.sobe.containsKey(sifra)) throw new Exception("Ova soba ne postoji");
+			if(!SobaManager.sobe.containsKey(sifra)) throw new Exception("Ova soba ne postoji");
 			if (!SobaricaManager.getInstance().izbaciSobuSobaricama(sifra)) 
 				throw new Exception("Doslo je do greske prilikom brisanja");
 			
-			Soba s = DodatnoManager.sobe.get(sifra);
+			Soba s = SobaManager.sobe.get(sifra);
 			String nazivSobe = new String(s.getNazivSobe());	
-			s=null;
-			DodatnoManager.sobe.remove(sifra);
+			SobaManager.sobe.remove(sifra);
 			
-			if(!DodatnoManager.getInstance().izbaciSobuRezervacije(nazivSobe))
+			if(!RezervacijaManager.getInstance().izbaciSobuRezervacije(nazivSobe))
 				throw new Exception("Doslo je do greske");
 			
 			
@@ -363,14 +362,31 @@ public class AdminManager {
 			
 			int sifraSobe = Integer.parseInt(sifra);
 			
-			if(DodatnoManager.sobe.containsKey(sifraSobe))
+			if(SobaManager.sobe.containsKey(sifraSobe))
 				throw new Exception("Soba je vec registrovana u sistemu");
 			
-			DodatnoManager.sobe.put(sifraSobe, new Soba(sifraSobe, nazivTipa.toString()));
+			SobaManager.sobe.put(sifraSobe, new Soba(sifraSobe, nazivTipa.toString()));
 			
 			return "Uspesno dodata soba";
 		}catch(Exception e) {
 			return e.getMessage();
+		}
+	}
+	
+	public static void pregledPodatakaZaposlenih() {
+		try {
+			System.out.println("Zaposleni");
+			for(Administrator admin : AdminManager.admini.values()) {
+				System.out.println(admin.toString());
+			}
+			for(Recepcioner r : RecepcionerManager.recepcioneri.values()) {
+				System.out.println(r.toString());
+			}
+			for(Sobarica s : SobaricaManager.sobarice.values()) {
+				System.out.println(s.toString());
+			}
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
 		}
 	}
 	

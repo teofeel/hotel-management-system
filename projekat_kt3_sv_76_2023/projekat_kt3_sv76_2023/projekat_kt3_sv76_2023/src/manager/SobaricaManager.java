@@ -44,9 +44,10 @@ public class SobaricaManager {
 		}
 	}
 
-	public void dodeliSobu(Soba s) {
+	public String dodeliSobu(Soba s) {
 		try {
 			if (this.sobarice.isEmpty()) throw new Exception("Nema sobarica");
+			
 			if (s.getStatus().equals(StatusSobe.SLOBODNA) || s.getStatus().equals(StatusSobe.ZAUZETO)) 
 				throw new Exception("Soba nije markirana za sredjivanje");
 			
@@ -56,8 +57,10 @@ public class SobaricaManager {
 											.orElse(null);
 			
 			najnezaposlenijaSobarica.addSoba(s);
+			
+			return "Soba dodeljena";
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			return e.getMessage();
 		}
 	}
 	

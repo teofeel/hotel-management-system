@@ -42,11 +42,12 @@ public class RecepcionerManager {
 		 * da bi se kasnije moglo filtrirati po sobama
 		*/
 		try {
-			for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-				if(DodatnoManager.rezervacije.get(i).getGost().equals(gost) && DodatnoManager.rezervacije.get(i).getDatumDolaska().equals(datumDolaska) 
-						&& DodatnoManager.rezervacije.get(i).getDatumOdlaska().equals(datumOdlaska)) {
+			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().equals(datumDolaska) 
+						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().equals(datumOdlaska)) {
 					
-					DodatnoManager.rezervacije.get(i).setSoba(soba);
+					
+					RezervacijaManager.rezervacije.get(i).setSoba(soba);
 					soba.setStatus(StatusSobe.ZAUZETO);
 					return "Uspesno izvrsen checkin";
 				}
@@ -69,16 +70,16 @@ public class RecepcionerManager {
 	
 	public String izmenaStatusaRezrvacije(String gost, String datumDolaska, String datumOdlaska, StatusRezervacije status) {
 		try {
-			for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-				if(DodatnoManager.rezervacije.get(i).getGost().equals(gost) && DodatnoManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
-						&& DodatnoManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
+			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
+						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
 					
-					if (DodatnoManager.getInstance().slobodneSobe(DodatnoManager.rezervacije.get(i)).size() == 0 && status.equals(StatusRezervacije.POTVRDJENA)) {
-						DodatnoManager.rezervacije.get(i).setStatus(StatusRezervacije.ODBIJENA);
+					if (SobaManager.getInstance().slobodneSobe(RezervacijaManager.rezervacije.get(i)).size() == 0 && status.equals(StatusRezervacije.POTVRDJENA)) {
+						RezervacijaManager.rezervacije.get(i).setStatus(StatusRezervacije.ODBIJENA);
 						throw new Exception("Nema slobodne sobe, rezervacja odbijena");
 					}
 					
-					DodatnoManager.rezervacije.get(i).setStatus(status);
+					RezervacijaManager.rezervacije.get(i).setStatus(status);
 					return "Status je izmenjen";
 				}
 			}
@@ -90,10 +91,10 @@ public class RecepcionerManager {
 	
 	public void dodajUsluguNaRezervaciju(DodatneUsluge dodatnaUsluga, String gost, String datumDolaska, String datumOdlaska) {
 		try {
-			for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-				if(DodatnoManager.rezervacije.get(i).getGost().equals(gost) && DodatnoManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
-						&& DodatnoManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
-					DodatnoManager.rezervacije.get(i).dodajUslugu(dodatnaUsluga);
+			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
+						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
+					RezervacijaManager.rezervacije.get(i).dodajUslugu(dodatnaUsluga);
 					return;
 				}
 			}
@@ -105,10 +106,10 @@ public class RecepcionerManager {
 	
 	public void izbaciUsluguSaRezervacije(String gost, DodatneUsluge dodatnaUsluga, String datumDolaska, String datumOdlaska) {
 		try {
-			for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-				if(DodatnoManager.rezervacije.get(i).getGost().equals(gost) && DodatnoManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
-						&& DodatnoManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
-					DodatnoManager.rezervacije.get(i).izbaciUslugu(dodatnaUsluga.getNaziv());
+			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
+						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
+					RezervacijaManager.rezervacije.get(i).izbaciUslugu(dodatnaUsluga.getNaziv());
 					return;
 				}
 			}

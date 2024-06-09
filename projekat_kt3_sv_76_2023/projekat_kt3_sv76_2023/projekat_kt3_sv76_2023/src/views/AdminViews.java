@@ -678,7 +678,7 @@ public class AdminViews extends JFrame{
     private JPanel sobePanel() {
     	JPanel sobePanel = new JPanel();
     	
-    	HashMap<Integer, Soba> sobe = DodatnoManager.sobe;
+    	HashMap<Integer, Soba> sobe = SobaManager.sobe;
     	
     	JPanel sobeListaPanel = new JPanel(new GridLayout(sobe.size(),2));
     	
@@ -865,7 +865,7 @@ public class AdminViews extends JFrame{
 		
 	}
 	
-	public static void pregledPodatakaZaposlenih() {
+	/*public static void pregledPodatakaZaposlenih() {
 		try {
 			System.out.println("Zaposleni");
 			for(Administrator admin : AdminManager.admini.values()) {
@@ -880,5 +880,5 @@ public class AdminViews extends JFrame{
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
-	}
+	}*/
 }

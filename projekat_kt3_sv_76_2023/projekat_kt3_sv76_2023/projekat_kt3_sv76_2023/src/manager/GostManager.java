@@ -33,7 +33,7 @@ public class GostManager {
 			
 			if(datumOD.isAfter(datumDO)) throw new Exception();
 			
-			DodatnoManager.rezervacije.add(new Rezervacija(gost.getKorisnickoIme(), tipSobe, null,  brOsoba, datumOD, datumDO, usluga));
+			RezervacijaManager.rezervacije.add(new Rezervacija(gost.getKorisnickoIme(), tipSobe, null,  brOsoba, datumOD, datumDO, usluga));
 			
 			return "Zahtev je poslat";
 		}catch(Exception e) {
@@ -44,10 +44,15 @@ public class GostManager {
 	
 	public String otkaziRezervaciju(Gost gost, String datumDolaska, String datumOdlaska) {
 		try {
-			for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-				if(DodatnoManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme()) && DodatnoManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
-						&& DodatnoManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
-					DodatnoManager.rezervacije.get(i).setStatus(StatusRezervacije.OTKAZANA);
+			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme()) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
+						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
+					
+					if(RezervacijaManager.rezervacije.get(i).getDatumDolaska().isBefore(LocalDate.now()) && 
+							RezervacijaManager.rezervacije.get(i).getStatus().equals(StatusRezervacije.POTVRDJENA))
+						throw new Exception("Rezervacija je prosla, ne moze se otkazati");
+						
+					RezervacijaManager.rezervacije.get(i).setStatus(StatusRezervacije.OTKAZANA);
 					return "Rezervacija je otkazana";
 				}
 			}
@@ -60,10 +65,14 @@ public class GostManager {
 	
 	public void dodajUsluguNaRezervaciju(Gost gost, DodatneUsluge dodatnaUsluga, String datumDolaska, String datumOdlaska) {
 		try {
-			for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-				if(DodatnoManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme()) && DodatnoManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
-						&& DodatnoManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
-					DodatnoManager.rezervacije.get(i).dodajUslugu(dodatnaUsluga);
+			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme()) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
+						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
+					
+					if(RezervacijaManager.rezervacije.get(i).getDatumDolaska().isBefore(LocalDate.now()))
+						throw new Exception("Rezervacija je prosla, ne mogu se dodati usluge na nju");
+					
+					RezervacijaManager.rezervacije.get(i).dodajUslugu(dodatnaUsluga);
 					return;
 				}
 			}
@@ -75,10 +84,14 @@ public class GostManager {
 	
 	public void izbaciUsluguSaRezervacije(Gost gost, DodatneUsluge dodatnaUsluga, String datumDolaska, String datumOdlaska) {
 		try {
-			for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-				if(DodatnoManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme()) && DodatnoManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
-						&& DodatnoManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
-					DodatnoManager.rezervacije.get(i).izbaciUslugu(dodatnaUsluga.getNaziv());
+			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme()) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
+						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
+					
+					if(RezervacijaManager.rezervacije.get(i).getDatumDolaska().isBefore(LocalDate.now()))
+						throw new Exception("Rezervacija je prosla, ne mogu se izbaciti usluge sa nje");
+					
+					RezervacijaManager.rezervacije.get(i).izbaciUslugu(dodatnaUsluga.getNaziv());
 					return;
 				}
 			}

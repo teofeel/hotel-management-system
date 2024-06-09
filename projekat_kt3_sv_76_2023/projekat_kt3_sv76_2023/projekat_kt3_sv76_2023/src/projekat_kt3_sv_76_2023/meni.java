@@ -28,9 +28,9 @@ public class meni {
 		AdminManager.getInstance().dodajZaposlenog("Recepcioner", "Nikola", "Nikolic", "Musko","1986-11-23", "1123545455", "Dunavska 14", "nikolaRecepcioner", "sifraNekaL123", StrucnaSprema.SREDNJA, "20");
 		AdminManager.getInstance().dodajZaposlenog("Sobarica", "Jana", "Janic", "Zensko","1986-11-23", "1123545455", "Dunavska 14", "janaSobarica", "sifraJana123", StrucnaSprema.OSNOVNA, "20");
 	
-		AdminViews.pregledPodatakaZaposlenih();
+		AdminManager.getInstance().pregledPodatakaZaposlenih();
 		AdminManager.getInstance().otpustiZaposlenog("nikolaRecepcioner");
-		AdminViews.pregledPodatakaZaposlenih();
+		AdminManager.getInstance().pregledPodatakaZaposlenih();
 		
 		
 		RecepcionerManager.getInstance().checkInProces("Milica", "Milic", "Zensko", "1999-01-01", "123123123", "Neka adresa 13", "64324732", "milica@example.com");
@@ -48,12 +48,12 @@ public class meni {
 		for(TipSobe ts : tipoviSoba.values() ) {//DodatnoManager.tipoviSoba.values()
 			ArrayList<String> dodaciSobe = new ArrayList<String>();
 			dodaciSobe.add("Standardno");
-			DodatnoManager.sobe.put(sifraSobe, new Soba(sifraSobe, ts, StatusSobe.SLOBODNA, dodaciSobe));
+			SobaManager.sobe.put(sifraSobe, new Soba(sifraSobe, ts, StatusSobe.SLOBODNA, dodaciSobe));
 			sifraSobe++;
 		}
 		
-		System.out.println(DodatnoManager.sobe.get(113).toString());
-		System.out.println(DodatnoManager.sobe.get(113).toString());
+		System.out.println(SobaManager.sobe.get(113).toString());
+		System.out.println(SobaManager.sobe.get(113).toString());
 		
 		
 		CenovnikManager.getInstance().dodajNovuUslugu("Dorucak","8");
@@ -89,21 +89,21 @@ public class meni {
 		////////////////////////
 		/* KT 3 TEST SCENARIO */
 		////////////////////////
-		
+		System.out.println();
 		System.out.println("KT3 TEST SCENARIO");
 		GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get("milica@example.com"), tipoviSoba.get("Trokrevetna (2+1)"), 1, "2024-05-27", "2024-06-03", milicaUsluge);
 		//GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get("milica@example.com"), tipoviSoba.get("Trokrevetna (2+1)"), 1, "2024-05-29", "2024-06-03", milicaUsluge);
 		//GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get("milica@example.com"), tipoviSoba.get("Trokrevetna (2+1)"), 1, "2024-05-28", "2024-06-05", milicaUsluge);
 		
-		RecepcionerManager.getInstance().izmenaStatusaRezrvacije("milica@example.com", "2024-05-27", "2024-06-03", StatusRezervacije.POTVRDJENA);
+		System.out.println(RecepcionerManager.getInstance().izmenaStatusaRezrvacije("milica@example.com", "2024-05-27", "2024-06-03", StatusRezervacije.POTVRDJENA));;
 		
-		RecepcionerManager.getInstance().checkInProcesRezervacija(GostManager.gosti.get("milica@example.com").getIme(),
-							LocalDate.parse("2024-05-27"), LocalDate.parse("2024-06-03"), DodatnoManager.sobe.get(113));
+		System.out.println(RecepcionerManager.getInstance().checkInProcesRezervacija(GostManager.gosti.get("milica@example.com").getKorisnickoIme(),
+							LocalDate.parse("2024-05-27"), LocalDate.parse("2024-06-03"), SobaManager.sobe.get(113)));
 		
 		RecepcionerManager.getInstance().dodajUsluguNaRezervaciju(CenovnikManager.cenovnici.get(0).getDodatneUsluge().get("Bazen"), "milica@example.com", "2024-05-27", "2024-06-03");
-		RecepcionerManager.getInstance().checkOUTProces(DodatnoManager.sobe.get(113));
-		//System.out.println(SobaricaManager.sobarice.get("janaSobarica").getDodeljeneSobe());
-		SobaricaManager.getInstance().sredjenaSoba(DodatnoManager.sobe.get(113), SobaricaManager.sobarice.get("janaSobarica"));
+		RecepcionerManager.getInstance().checkOUTProces(SobaManager.sobe.get(113));
+		System.out.println(SobaricaManager.sobarice.get("janaSobarica").getDodeljeneSobe());
+		SobaricaManager.getInstance().sredjenaSoba(SobaManager.sobe.get(113), SobaricaManager.sobarice.get("janaSobarica"));
 		System.out.println(SobaricaManager.sobarice.get("janaSobarica").getDodeljeneSobe());
 		
 		System.out.println("Ana rezervacije");
@@ -115,7 +115,7 @@ public class meni {
 		
 		
 		//DodatnoManager.getInstance().odbijIstekleRezervacije();
-		GostViews.pregledRezervacija(GostManager.gosti.get("ana@example.com"));
+		RezervacijaManager.getInstance().pregledRezervacija(GostManager.gosti.get("ana@example.com"));
 		
 		
 		//System.out.println("Milicne rezervacije");

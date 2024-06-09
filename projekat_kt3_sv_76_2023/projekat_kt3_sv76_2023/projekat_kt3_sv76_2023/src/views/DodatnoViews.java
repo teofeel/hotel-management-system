@@ -24,13 +24,13 @@ public class DodatnoViews {
 				d++;
 			}
 			int sviDaniSlobodni = dani.size();
-			for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-				if(!DodatnoManager.rezervacije.get(i).getTipSobe().getNaziv().equals(ts.getNaziv()) || !DodatnoManager.rezervacije.get(i).getStatus().equals(StatusRezervacije.POTVRDJENA)) {
+			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+				if(!RezervacijaManager.rezervacije.get(i).getTipSobe().getNaziv().equals(ts.getNaziv()) || !RezervacijaManager.rezervacije.get(i).getStatus().equals(StatusRezervacije.POTVRDJENA)) {
 					continue;
 				}
 				
-				LocalDate pocetakRez = DodatnoManager.rezervacije.get(i).getDatumDolaska();
-				LocalDate krajRez = DodatnoManager.rezervacije.get(i).getDatumOdlaska();
+				LocalDate pocetakRez = RezervacijaManager.rezervacije.get(i).getDatumDolaska();
+				LocalDate krajRez = RezervacijaManager.rezervacije.get(i).getDatumOdlaska();
 				
 				
 				int dd=0;

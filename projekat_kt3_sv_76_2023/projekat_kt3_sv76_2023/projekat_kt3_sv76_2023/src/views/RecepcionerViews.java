@@ -38,9 +38,9 @@ public class RecepcionerViews extends JFrame{
 		this.korisnickoIme = korisnickoIme;
 		
 		setTitle("Recepcioner Dashboard");
-        setSize(1200, 750);
+        setSize(1000, 750);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(true);
+        setResizable(false);
         
         navbar = new JToolBar();
         navbar.setFloatable(false);
@@ -93,7 +93,7 @@ public class RecepcionerViews extends JFrame{
 	}
 	
 	private JPanel sobePanel() {
-		HashMap<Integer, Soba> sobe = DodatnoManager.sobe;
+		HashMap<Integer, Soba> sobe = SobaManager.sobe;
 
 		JPanel sobePanel = new JPanel();
 		
@@ -258,10 +258,10 @@ public class RecepcionerViews extends JFrame{
 		JPanel checkInPanel = new JPanel(new BorderLayout());
 	    checkInPanel.add(new JLabel("Check IN rezervacija"), BorderLayout.NORTH);
 
-	    ArrayList<Rezervacija> rezervacije = DodatnoManager.getInstance().potvrdjeneRezervacije();
+	    ArrayList<Rezervacija> rezervacije = RezervacijaManager.getInstance().potvrdjeneRezervacije();
 	    JPanel rezervacijeListPanel = new JPanel(new GridBagLayout());
 	    GridBagConstraints gbc = new GridBagConstraints();
-	    gbc.insets = new Insets(5, 5, 5, 5);
+	    gbc.insets = new Insets(10, 5, 5, 5);
 	    gbc.fill = GridBagConstraints.HORIZONTAL;
 
 	    int row = 0;
@@ -328,6 +328,7 @@ public class RecepcionerViews extends JFrame{
 	            public void actionPerformed(ActionEvent e) {
 	                JFrame checkInFrame = checkInFrame(rez);
 	                checkInFrame.setVisible(true);
+	               
 	            }
 	        });
 
@@ -344,7 +345,7 @@ public class RecepcionerViews extends JFrame{
 		JPanel izmenaStatusaPanel = new JPanel(new BorderLayout());
 	    izmenaStatusaPanel.add(new JLabel("Izmena statusa"), BorderLayout.NORTH);
 
-	    ArrayList<Rezervacija> rezervacije = DodatnoManager.getInstance().naCekanjuRezervacije();
+	    ArrayList<Rezervacija> rezervacije = RezervacijaManager.getInstance().naCekanjuRezervacije();
 	    
 	    JPanel rezervacijaPanel = new JPanel(new GridBagLayout());
 	    GridBagConstraints gbc = new GridBagConstraints();
@@ -381,6 +382,13 @@ public class RecepcionerViews extends JFrame{
 	            	String poruka = RecepcionerManager.getInstance().izmenaStatusaRezrvacije(rez.getGost(), 
 							rez.getDatumDolaska().toString(), rez.getDatumOdlaska().toString(), StatusRezervacije.POTVRDJENA);
 					JOptionPane.showMessageDialog(izmenaStatusaPanel, poruka);
+					
+					izmenaStatusaPanel.removeAll();
+					izmenaStatusaPanel.add(izmenaStatusaPanel());
+					izmenaStatusaPanel.revalidate();
+					izmenaStatusaPanel.repaint();
+					
+					
 	            }
 	        });
 	        rezervacijaPanel.add(potvrdiButton, gbc);
@@ -393,6 +401,12 @@ public class RecepcionerViews extends JFrame{
 	            	String poruka = RecepcionerManager.getInstance().izmenaStatusaRezrvacije(rez.getGost(), 
 							rez.getDatumDolaska().toString(), rez.getDatumOdlaska().toString(), StatusRezervacije.ODBIJENA);
 					JOptionPane.showMessageDialog(izmenaStatusaPanel, poruka);
+					
+
+					izmenaStatusaPanel.removeAll();
+					izmenaStatusaPanel.add(izmenaStatusaPanel());
+					izmenaStatusaPanel.revalidate();
+					izmenaStatusaPanel.repaint();
 	            }
 	        });
 	        rezervacijaPanel.add(odbijButton, gbc);
@@ -412,7 +426,7 @@ public class RecepcionerViews extends JFrame{
 	private JPanel checkOutPanel() {
 		JPanel checkOutPanel = new JPanel();
 		
-		ArrayList<Soba> sobe = DodatnoManager.getInstance().zauzeteSobe();
+		ArrayList<Soba> sobe = SobaManager.getInstance().zauzeteSobe();
 		System.out.println(sobe);
 		JPanel sobePanel = new JPanel(new GridLayout(sobe.size(),2));
 		
@@ -469,7 +483,7 @@ public class RecepcionerViews extends JFrame{
 		checkInFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		JComboBox<Integer> sobeComboBox = new JComboBox<Integer>();
 		
-		ArrayList<Soba> sobe = DodatnoManager.getInstance().slobodneSobeCheckIn(rez.getTipSobe().getNaziv());
+		ArrayList<Soba> sobe = SobaManager.getInstance().slobodneSobeCheckIn(rez.getTipSobe().getNaziv());
 		
 		for(Soba s:sobe) {
 			sobeComboBox.addItem(s.getSifra());
@@ -480,8 +494,9 @@ public class RecepcionerViews extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String poruka = RecepcionerManager.getInstance().checkInProcesRezervacija(rez.getGost(), rez.getDatumDolaska(),
-																		rez.getDatumOdlaska(), DodatnoManager.sobe.get(sobeComboBox.getSelectedItem()));
+																		rez.getDatumOdlaska(), SobaManager.sobe.get(sobeComboBox.getSelectedItem()));
 				JOptionPane.showMessageDialog(checkInPanel, poruka);
+				
 			}
 		});
 		

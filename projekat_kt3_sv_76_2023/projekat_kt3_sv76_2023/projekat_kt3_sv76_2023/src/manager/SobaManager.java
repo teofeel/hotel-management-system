@@ -8,30 +8,31 @@ import java.util.*;
 import entity.*;
 import enumi.StatusRezervacije;
 import enumi.StatusSobe;
+import enumi.TipSobeEnum;
 
-public class DodatnoManager {
-	private static DodatnoManager instance = new DodatnoManager();
+public class SobaManager {
+	private static SobaManager instance = new SobaManager();
 	
-	public static ArrayList<Rezervacija> rezervacije = new ArrayList<Rezervacija>();
+	//public static ArrayList<Rezervacija> rezervacije = new ArrayList<Rezervacija>();
 	public static HashMap<Integer,Soba> sobe = new HashMap<Integer, Soba>();
 	
-	private DodatnoManager() {}
+	private SobaManager() {}
 	
-	public static DodatnoManager getInstance() {
+	public static SobaManager getInstance() {
 		if(instance==null) {
-			instance = new DodatnoManager();
+			instance = new SobaManager();
 		}
 		return instance;
 	}
 	
-	public ArrayList<Rezervacija> naCekanjuRezervacije(){
+	/*public ArrayList<Rezervacija> naCekanjuRezervacije(){
 		ArrayList<Rezervacija> rezervacijeCekanje = new ArrayList<Rezervacija>();
 		for(Rezervacija rez:this.rezervacije) {
 			if(rez.getStatus().equals(StatusRezervacije.NA_CEKANJU))
 				rezervacijeCekanje.add(rez);
 		}
 		return rezervacijeCekanje;
-	}
+	}*/
 	
 	public ArrayList<Soba> slobodneSobeCheckIn(String tipSobe){
 		ArrayList<Soba> slobodne = new ArrayList<Soba>();
@@ -57,7 +58,7 @@ public class DodatnoManager {
 		
 		if (sobePoTipu.isEmpty()) return new ArrayList<Soba>();
 		
-		for (Rezervacija rezervacija : rezervacije) {
+		for (Rezervacija rezervacija : RezervacijaManager.rezervacije) {
 			if (rezervacija.getDatumOdlaska().minusDays(1).isBefore(rez.getDatumDolaska()) || rezervacija.getDatumDolaska().isAfter(rez.getDatumOdlaska())) {
 				continue;
 			}
@@ -91,7 +92,7 @@ public class DodatnoManager {
 		return zauzeteSobe;
 	}
 	
-	public void izbaciNepostojeceUsluge(String nazivUsluge) {
+	/*public void izbaciNepostojeceUsluge(String nazivUsluge) {
 		for(Rezervacija rez:this.rezervacije) {
 			for(DodatneUsluge du:rez.getUsluge()) {
 				if(du.getNaziv().equals(nazivUsluge)) {
@@ -122,9 +123,7 @@ public class DodatnoManager {
 		ArrayList<Rezervacija> rezervacije = new ArrayList<Rezervacija>();
 		
 		for(Rezervacija rez:DodatnoManager.rezervacije) {
-			if(rez.getSoba()==null && rez.getStatus().equals(StatusRezervacije.POTVRDJENA)) {
-				System.out.println("potvrdjene rez bez sobe");
-				System.out.println(rez.getSoba());
+			if(rez.getSoba()==null && rez.getStatus().equals(StatusRezervacije.POTVRDJENA) && rez.getDatumOdlaska().isAfter(LocalDate.now())) {
 				rezervacije.add(rez);
 			}
 		}
@@ -146,6 +145,61 @@ public class DodatnoManager {
 			return false;
 		}
 		
+	}*/
+	
+	public ArrayList<String> pregledSlobodnihTipovaSoba(LocalDate pocetak, LocalDate kraj) {
+		ArrayList<String> tipoviSobe = new ArrayList<String>();
+		
+		if(pocetak.isBefore(LocalDate.now()) || kraj.isBefore(LocalDate.now()))
+			return tipoviSobe;
+		
+		for(TipSobeEnum ts:TipSobeEnum.values()) {
+			if(this.pregledSlobodnihSoba(pocetak, kraj, ts.toString()) && 
+					!tipoviSobe.contains(ts.toString())) {
+				tipoviSobe.add(ts.toString());
+			}
+		}
+		
+		return tipoviSobe;
+	}
+	
+	public static boolean pregledSlobodnihSoba(LocalDate pocetak, LocalDate kraj, String tipSobe) {
+		ArrayList<Soba> sobePoTipu = new ArrayList<Soba>();
+		
+		
+		for (Soba soba : SobaManager.sobe.values()) {
+			if(soba.getNazivSobe().equals(tipSobe) && soba.getStatus().equals(StatusSobe.SLOBODNA)) {
+				sobePoTipu.add(soba);
+			}
+		}
+		if (sobePoTipu.isEmpty()) {
+			System.out.println("Nema slbodnih soba");
+			return false;
+		}
+		
+		for (Rezervacija rezervacija : RezervacijaManager.rezervacije) {
+			if (rezervacija.getDatumOdlaska().minusDays(1).isBefore(pocetak) || rezervacija.getDatumDolaska().isAfter(kraj)) {
+				continue;
+			}
+			
+			if (sobePoTipu.isEmpty()) {
+				System.out.println("Nema slobodnih soba");
+				return false;
+			}
+			
+			if (rezervacija.getTipSobe().getNaziv().equals(tipSobe) && rezervacija.getStatus().equals(StatusRezervacije.POTVRDJENA)){
+				sobePoTipu.remove(0);
+			}
+		}
+		if (sobePoTipu.isEmpty()) {
+			System.out.println("Nema slobodnih soba");
+			return false;
+		}
+		
+		for(Soba s:sobePoTipu) {
+			System.out.println(s);
+		}
+		return true;
 	}
 	
 }

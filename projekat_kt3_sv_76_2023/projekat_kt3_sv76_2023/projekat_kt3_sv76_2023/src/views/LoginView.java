@@ -19,7 +19,7 @@ public class LoginView extends JFrame{
     public LoginView() {
     	FileManager.getInstance().ocistiPodatkeAplikacija();
     	FileManager.getInstance().ucitajPodatke();
-    	DodatnoManager.getInstance().odbijIstekleRezervacije();
+    	RezervacijaManager.getInstance().odbijIstekleRezervacije();
     	
         setTitle("Login Form");
         setBounds(300, 90, 400, 300);

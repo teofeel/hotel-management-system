@@ -128,7 +128,7 @@ public class GostViews extends JFrame{
                 tipoviSoba.removeAllItems();
 
                
-                ArrayList<String> slobodneSobe = pregledSlobodnihTipovaSoba(
+                ArrayList<String> slobodneSobe = SobaManager.getInstance().pregledSlobodnihTipovaSoba(
                         LocalDate.ofInstant(datumDolaska.getDate().toInstant(), ZoneId.systemDefault()),
                         LocalDate.ofInstant(datumOdlaska.getDate().toInstant(), ZoneId.systemDefault())
                 );
@@ -244,7 +244,7 @@ public class GostViews extends JFrame{
 		JPanel rezervacijePanel = new JPanel(new BorderLayout());
 	    // rezervacijePanel.add(new JLabel("Rezervacije"), BorderLayout.NORTH);
 
-	    ArrayList<Rezervacija> rezervacije = this.pregledRezervacija(GostManager.gosti.get(korisnickoIme));
+	    ArrayList<Rezervacija> rezervacije = RezervacijaManager.getInstance().pregledRezervacija(GostManager.gosti.get(korisnickoIme));
 	    System.out.println(rezervacije);
 	    JPanel listaRezervacija = new JPanel(new GridBagLayout());
 	    GridBagConstraints gbc = new GridBagConstraints();
@@ -355,18 +355,18 @@ public class GostViews extends JFrame{
 		
 	}
 
-	public static ArrayList<Rezervacija> pregledRezervacija(Gost gost) {
+	/*public static ArrayList<Rezervacija> pregledRezervacija(Gost gost) {
 		ArrayList<Rezervacija> rezervacije = new ArrayList<Rezervacija>();
-		for(int i=0;i<DodatnoManager.rezervacije.size();i++) {
-			if (DodatnoManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme())) {
-				rezervacije.add(DodatnoManager.rezervacije.get(i));
-				System.out.println(DodatnoManager.rezervacije.get(i).toString());
+		for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
+			if (RezervacijaManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme())) {
+				rezervacije.add(RezervacijaManager.rezervacije.get(i));
+				System.out.println(RezervacijaManager.rezervacije.get(i).toString());
 			}
 		}
 		return rezervacije;
-	}
+	}*/
 	
-	private ArrayList<String> pregledSlobodnihTipovaSoba(LocalDate pocetak, LocalDate kraj) {
+	/*private ArrayList<String> pregledSlobodnihTipovaSoba(LocalDate pocetak, LocalDate kraj) {
 		ArrayList<String> tipoviSobe = new ArrayList<String>();
 		
 		if(pocetak.isBefore(LocalDate.now()) || kraj.isBefore(LocalDate.now()))
@@ -386,7 +386,7 @@ public class GostViews extends JFrame{
 		ArrayList<Soba> sobePoTipu = new ArrayList<Soba>();
 		
 		
-		for (Soba soba : DodatnoManager.sobe.values()) {
+		for (Soba soba : SobaManager.sobe.values()) {
 			if(soba.getNazivSobe().equals(tipSobe) && soba.getStatus().equals(StatusSobe.SLOBODNA)) {
 				sobePoTipu.add(soba);
 			}
@@ -396,7 +396,7 @@ public class GostViews extends JFrame{
 			return false;
 		}
 		
-		for (Rezervacija rezervacija : DodatnoManager.rezervacije) {
+		for (Rezervacija rezervacija : RezervacijaManager.rezervacije) {
 			if (rezervacija.getDatumOdlaska().minusDays(1).isBefore(pocetak) || rezervacija.getDatumDolaska().isAfter(kraj)) {
 				continue;
 			}
@@ -419,5 +419,5 @@ public class GostViews extends JFrame{
 			System.out.println(s);
 		}
 		return true;
-	}
+	}*/
 }

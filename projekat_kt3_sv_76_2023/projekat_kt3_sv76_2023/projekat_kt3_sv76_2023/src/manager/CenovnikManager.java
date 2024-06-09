@@ -110,7 +110,7 @@ public class CenovnikManager {
 					}
 				}
 			}
-			DodatnoManager.getInstance().izbaciNepostojeceUsluge(nazivUsluge);
+			RezervacijaManager.getInstance().izbaciNepostojeceUsluge(nazivUsluge);
 			
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
