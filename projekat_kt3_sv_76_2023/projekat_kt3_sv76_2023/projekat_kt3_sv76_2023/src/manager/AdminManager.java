@@ -107,7 +107,7 @@ public class AdminManager {
 			
 			Zaposleni zaposleni;
 			if(tip.equals("Administrator")) {
-				if(!this.admini.containsKey(korisnickoIme)) throw new Error("Ne postoji recepcioner");
+				if(!this.admini.containsKey(korisnickoIme)) throw new Exception("Ne postoji administrator");
 				Administrator admin = this.admini.get(korisnickoIme);
 				
 				admin.setKorisnickoIme(novoKorisnickoIme);
@@ -118,14 +118,21 @@ public class AdminManager {
 				admin.setTelefon(telefon);
 				admin.setAdresa(adresa);
 				admin.setLozinka(lozinka);
-				admin.setStrucnaSprema(StrucnaSprema.valueOf(sprema));
+				
+				if (sprema.equals("Visoka sprema"))
+					admin.setStrucnaSprema(StrucnaSprema.VISOKA);
+				else if (sprema.equals("Srednja sprema"))
+					admin.setStrucnaSprema(StrucnaSprema.SREDNJA);
+				else 
+					admin.setStrucnaSprema(StrucnaSprema.OSNOVNA);
+				
 				admin.setStaz(Integer.parseInt(staz));
 				
 				AdminManager.admini.remove(korisnickoIme);
 				AdminManager.admini.put(novoKorisnickoIme, admin);
 				
 			}else if(tip.equals("Recepcioner")){
-				if(!RecepcionerManager.recepcioneri.containsKey(korisnickoIme)) throw new Error("Ne postoji recepcioner");
+				if(!RecepcionerManager.recepcioneri.containsKey(korisnickoIme)) throw new Exception("Ne postoji recepcioner");
 				Recepcioner recp = RecepcionerManager.recepcioneri.get(korisnickoIme);
 				
 				recp.setKorisnickoIme(novoKorisnickoIme);
@@ -136,14 +143,21 @@ public class AdminManager {
 				recp.setTelefon(telefon);
 				recp.setAdresa(adresa);
 				recp.setLozinka(lozinka);
-				recp.setStrucnaSprema(StrucnaSprema.valueOf(sprema));
+				
+				if (sprema.equals("Visoka sprema"))
+					recp.setStrucnaSprema(StrucnaSprema.VISOKA);
+				else if (sprema.equals("Srednja sprema"))
+					recp.setStrucnaSprema(StrucnaSprema.SREDNJA);
+				else 
+					recp.setStrucnaSprema(StrucnaSprema.OSNOVNA);
+				
 				recp.setStaz(Integer.parseInt(staz));
 				
 				RecepcionerManager.recepcioneri.remove(korisnickoIme);
 				RecepcionerManager.recepcioneri.put(novoKorisnickoIme, recp);
 				
 			}else if(tip.equals("Sobarica")){
-				if(!SobaricaManager.sobarice.containsKey(korisnickoIme)) throw new Error("Ne postoji recepcioner");
+				if(!SobaricaManager.sobarice.containsKey(korisnickoIme)) throw new Exception("Ne postoji sobarica");
 				Sobarica sobarica = SobaricaManager.sobarice.get(korisnickoIme);
 				
 				sobarica.setKorisnickoIme(novoKorisnickoIme);
@@ -154,7 +168,12 @@ public class AdminManager {
 				sobarica.setTelefon(telefon);
 				sobarica.setAdresa(adresa);
 				sobarica.setLozinka(lozinka);
-				sobarica.setStrucnaSprema(StrucnaSprema.valueOf(sprema));
+				if (sprema.equals("Visoka sprema"))
+					sobarica.setStrucnaSprema(StrucnaSprema.VISOKA);
+				else if (sprema.equals("Srednja sprema"))
+					sobarica.setStrucnaSprema(StrucnaSprema.SREDNJA);
+				else 
+					sobarica.setStrucnaSprema(StrucnaSprema.OSNOVNA);
 				sobarica.setStaz(Integer.parseInt(staz));
 				
 				SobaricaManager.sobarice.remove(korisnickoIme);
@@ -260,17 +279,17 @@ public class AdminManager {
 		}
 	}
 	
-	public void obrisiCenovnik(String vaziOD, String vaziDO) {
+	public String obrisiCenovnik(String vaziOD, String vaziDO) {
 		try {
 			for(Cenovnik c:CenovnikManager.cenovnici) {
-				if(c.getVaziOd().equals(vaziOD) && c.getVaziDo().equals(vaziDO)) {
+				if(c.getVaziOd().equals(LocalDate.parse(vaziOD)) && c.getVaziDo().equals(LocalDate.parse(vaziDO))) {
 					CenovnikManager.cenovnici.remove(c);
-					return;
+					return "Obrisan";
 				}
 			}
 			throw new Exception("Cenovnik nije pronadjen");
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			return e.getMessage();
 		}
 	}
 	
@@ -338,15 +357,16 @@ public class AdminManager {
 			if(sifraSobe.equals("")) throw new Exception("Sifra soba nije navedena");
 			
 			if(!SobaManager.sobe.containsKey(sifra)) throw new Exception("Ova soba ne postoji");
-			if (!SobaricaManager.getInstance().izbaciSobuSobaricama(sifra)) 
-				throw new Exception("Doslo je do greske prilikom brisanja");
+			
 			
 			Soba s = SobaManager.sobe.get(sifra);
 			String nazivSobe = new String(s.getNazivSobe());	
 			SobaManager.sobe.remove(sifra);
 			
-			if(!RezervacijaManager.getInstance().izbaciSobuRezervacije(nazivSobe))
-				throw new Exception("Doslo je do greske");
+			if (SobaricaManager.getInstance().izbaciSobuSobaricama(sifra) && 
+					RezervacijaManager.getInstance().izbaciSobuRezervacije(nazivSobe)) 
+				throw new Exception("Soba je izbacena sa svih rezervacija i sobaricama");
+			
 			
 			
 			return "Soba uspesno izbrisana";

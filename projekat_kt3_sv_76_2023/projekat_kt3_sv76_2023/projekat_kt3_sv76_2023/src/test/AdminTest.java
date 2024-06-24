@@ -9,6 +9,7 @@ import org.junit.Test;
 import enumi.StrucnaSprema;
 import enumi.TipSobeEnum;
 import manager.AdminManager;
+import manager.SobaManager;
 
 public class AdminTest {
 
@@ -29,7 +30,6 @@ public class AdminTest {
 	@Test
 	public void dodajZaposlenogMetoda() {
 		String poruka1 = am.dodajZaposlenog("Recepcioner", "Nikola", "Nikolica", "Musko","1986-11-23", "1123545455", "Dunavska 14", "nidzaRecepcioner", "sifraNeka123", StrucnaSprema.VISOKA, "20");
-	
 		assertEquals(poruka1, "Uspesno dodat recepcioner");
 		assertTrue(!poruka1.equals("Uspesno dodata sobarica"));
 		
@@ -70,6 +70,27 @@ public class AdminTest {
 	}
 	
 	@Test
+	public void izmeniPodatkeZaposlenog() {
+		String poruka = am.dodajZaposlenog("Recepcioner", "Nikola", "Nikolica", "Musko","1986-11-23", "1123545455", "Dunavska 14", "izmenaPodatakaZaposlenog", "sifraNeka123", StrucnaSprema.VISOKA, "20");
+		assertEquals(poruka, "Uspesno dodat recepcioner");
+		
+		String poruka1 = am.izmeniPodatkeZaposlenog("izmenaPodatakaZaposlenog", "izmenaPodatakaZaposlenogggg", "Miki", "Stankovic", "Musko", "1999-01-01", "1122112",  "Cara Lazara 21", "sifraNeka123", StrucnaSprema.VISOKA.toString(), "15", "Recepcioner");
+		assertEquals("Uspesno izmenjeni podaci", poruka1);
+		
+		
+		
+		String poruka2 = am.dodajZaposlenog("Recepcioner", "Nikola", "Nikolica", "Musko","1986-11-23", "1123545455", "Dunavska 14", "izmenaPodatakaZaposlenogggg", "sifraNeka123", StrucnaSprema.VISOKA, "20");
+		assertEquals("Postoji recepcioner sa ovim korisnickim imenom", poruka2);
+		
+		String poruka3 = am.izmeniPodatkeZaposlenog("izmenaPodatakaZaposlenogggg", "peraAdmin", "Miki", "Stankovic", "Musko", "1999-01-01", "1122112",  "Cara Lazara 21", "sifraNeka123", StrucnaSprema.VISOKA.toString(), "15", "Recepcioner");
+		assertEquals("Ovo korisnicko ime je vec dodeljeno drugom zaposlenom", poruka3);
+		
+		
+		String poruka4 = am.izmeniPodatkeZaposlenog("izmenaPodatakaZaposlenog121", "novo", "Miki", "Stankovic", "Musko", "1999-01-01", "1122112",  "Cara Lazara 21", "sifraNeka123", StrucnaSprema.VISOKA.toString(), "15", "Recepcioner");
+		assertEquals("Ne postoji recepcioner", poruka4);
+	}
+	
+	@Test
 	public void izmeniPodatkeGostaMetoda() {
 		String poruka = am.dodajGosta("Milan", "Stankovic", "Musko", "1999-01-01", "1122112", "Cara Lazara 21", "8979723", "testIzmena@example.com");
 		assertTrue(poruka.equals("Uspesno dodat gost"));
@@ -88,6 +109,19 @@ public class AdminTest {
 		assertEquals("Gost ne postoji", poruka4);
 	}
 	
+	
+	@Test
+	public void izbrisiGosta() {
+		String poruka = am.dodajGosta("Milan", "Stankovic", "Musko", "1999-01-01", "1122112", "Cara Lazara 21", "8979723", "izbrisiGosta");
+		assertEquals("Uspesno dodat gost", poruka);
+		
+		String poruka1 = am.obrisiGosta("fdsgfdgfhkfgfsdkjgfsdj");
+		assertEquals("Gost ne postoji", poruka1);
+		
+		String poruka2 = am.obrisiGosta("izbrisiGosta");
+		assertEquals("Gost je izbrisan iz sistema", poruka2);
+	}
+	
 	@Test
 	public void definisanjeCenovnikaMetoda() {
 		String poruka = am.definisanjeCenovnika("2025-01-01", "2025-05-05", false);
@@ -95,6 +129,18 @@ public class AdminTest {
 		
 		String poruka1 = am.definisanjeCenovnika("2024-01-01", "2024-05-05", false);
 		assertEquals("Cenovnik se moze definisati samo sa naredne datume", poruka1);
+	}
+	
+	@Test 
+	public void obrisiCenovnik(){
+		String poruka = am.definisanjeCenovnika("2029-01-01", "2029-05-05", false);
+		assertEquals("Uspesno dodat novi cenovnik", poruka);
+		
+		String poruka1 = am.obrisiCenovnik("2020-01-01", "2020-05-05");
+		assertEquals("Cenovnik nije pronadjen", poruka1);
+		
+		String poruka2 = am.obrisiCenovnik("2029-01-01", "2029-05-05");
+		assertEquals("Obrisan", poruka2);
 	}
 	
 	@Test
@@ -107,6 +153,39 @@ public class AdminTest {
 		
 		String poruka2 = am.dodajSobu("", TipSobeEnum.JEDNOKREVETNA);
 		assertEquals("Sva polja moraju biti popunjena", poruka2);
+	}
+	
+	@Test 
+	public void izmeniSobuMetoda() {
+		String poruka = am.dodajSobu("166", TipSobeEnum.JEDNOKREVETNA);
+		assertEquals("Uspesno dodata soba", poruka);
+		
+		String poruka1 = am.izmeniSobu("199", "177", "nekitip");
+		assertEquals("Sifra sobe ne postoji", poruka1);
+		
+		String poruka2 = am.izmeniSobu("166", "112", "nekitip");
+		assertEquals("Nova sifra sobe je vec registrovana u sistemu", poruka2);
+		
+		String poruka3 = am.izmeniSobu("166", "177", "nekitip");
+		assertEquals("Podaci uspesno izmenjeni", poruka3);
+		
+		String poruka4 = am.dodajDodatnoSoba(SobaManager.sobe.get(177), "slon");
+		assertEquals("Uspesno dodat dodatak", poruka4);
+		
+		String poruka5 = am.izbaciDodatnoSoba(SobaManager.sobe.get(177), "slon");
+		assertEquals("Uspesno izbacen dodatak", poruka5);
+	}
+	
+	@Test 
+	public void izbrisiSobu() {
+		String poruka = am.dodajSobu("205", TipSobeEnum.JEDNOKREVETNA);
+		assertEquals("Uspesno dodata soba", poruka);
+	
+		String poruka1 = am.izbrisiSobu("452454545");
+		assertEquals("Ova soba ne postoji", poruka1);
+		
+		String poruka2 = am.izbrisiSobu("205");
+		assertEquals("Soba uspesno izbrisana", poruka2);
 	}
 
 }
