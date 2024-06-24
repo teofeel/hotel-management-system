@@ -151,6 +151,12 @@ public class meni {
 	      }
 		System.out.println(result.wasSuccessful());
 		
+		result = JUnitCore.runClasses(GostTests.class);
+		for (Failure failure : result.getFailures()) {
+	         System.out.println(failure.toString());
+	      }
+		System.out.println(result.wasSuccessful());
+		
 		LoginView loginWindow = new LoginView();
 		
 		

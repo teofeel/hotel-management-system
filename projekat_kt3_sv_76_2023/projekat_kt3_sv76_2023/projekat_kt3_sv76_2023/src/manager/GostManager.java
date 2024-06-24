@@ -63,8 +63,11 @@ public class GostManager {
 	}
 	
 	
-	public void dodajUsluguNaRezervaciju(Gost gost, DodatneUsluge dodatnaUsluga, String datumDolaska, String datumOdlaska) {
+	public String dodajUsluguNaRezervaciju(Gost gost, DodatneUsluge dodatnaUsluga, String datumDolaska, String datumOdlaska) {
 		try {
+			if (!CenovnikManager.cenovnici.get(0).getDodatneUsluge().containsKey(dodatnaUsluga.getNaziv()))
+				throw new Exception("Ova usluga ne postoji");
+			
 			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
 				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme()) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
 						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
@@ -73,17 +76,20 @@ public class GostManager {
 						throw new Exception("Rezervacija je prosla, ne mogu se dodati usluge na nju");
 					
 					RezervacijaManager.rezervacije.get(i).dodajUslugu(dodatnaUsluga);
-					return;
+					return "Dodata usluga na rezervaciju";
 				}
 			}
 			throw new Exception("Rezervacija ne postoji");
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			return e.getMessage();
 		}
 	}
 	
-	public void izbaciUsluguSaRezervacije(Gost gost, DodatneUsluge dodatnaUsluga, String datumDolaska, String datumOdlaska) {
+	public String izbaciUsluguSaRezervacije(Gost gost, DodatneUsluge dodatnaUsluga, String datumDolaska, String datumOdlaska) {
 		try {
+			if (!CenovnikManager.cenovnici.get(0).getDodatneUsluge().containsKey(dodatnaUsluga.getNaziv()))
+				throw new Exception("Ova usluga ne postoji");
+			
 			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
 				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme()) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
 						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
@@ -92,12 +98,12 @@ public class GostManager {
 						throw new Exception("Rezervacija je prosla, ne mogu se izbaciti usluge sa nje");
 					
 					RezervacijaManager.rezervacije.get(i).izbaciUslugu(dodatnaUsluga.getNaziv());
-					return;
+					return "Izbacena usluga sa rezervaciju";
 				}
 			}
 			throw new Exception("Rezervacija ne postoji");
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			return e.getMessage();
 		}
 	}
 	
