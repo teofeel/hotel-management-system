@@ -26,7 +26,6 @@ public class FileManager {
 	}
 	public void upisiPodatke() {
 		this.ocistiFolder();
-		System.out.println("cuvanje");
 		this.upisiRezervacije();
 		this.upisiSobe();
 		this.upisiGoste();
@@ -52,7 +51,7 @@ public class FileManager {
 		RecepcionerManager.recepcioneri.clear();
 		SobaricaManager.sobarice.clear();
 	}
-	private void ocistiFolder() {
+	public void ocistiFolder() {
 		try {
 			Path path = Paths.get("../data");
 

@@ -24,7 +24,6 @@ public class AdminTests {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception{
 		System.out.println("Kraj admin testa");
-		am.dispose();
 	}
 	
 	@Test

@@ -103,12 +103,12 @@ public class meni {
 		System.out.println(RecepcionerManager.getInstance().izmenaStatusaRezrvacije("milica@example.com", "2024-05-27", "2024-06-03", StatusRezervacije.POTVRDJENA));;
 		
 		System.out.println(RecepcionerManager.getInstance().checkInProcesRezervacija(GostManager.gosti.get("milica@example.com").getKorisnickoIme(),
-							LocalDate.parse("2024-05-27"), LocalDate.parse("2024-06-03"), SobaManager.sobe.get(113)));
+							LocalDate.parse("2024-05-27"), LocalDate.parse("2024-06-03"), SobaManager.sobe.get(112)));
 		
 		RecepcionerManager.getInstance().dodajUsluguNaRezervaciju(CenovnikManager.cenovnici.get(0).getDodatneUsluge().get("Bazen"), "milica@example.com", "2024-05-27", "2024-06-03");
-		RecepcionerManager.getInstance().checkOUTProces(SobaManager.sobe.get(113));
+		RecepcionerManager.getInstance().checkOUTProces(SobaManager.sobe.get(112));
 		System.out.println(SobaricaManager.sobarice.get("janaSobarica").getDodeljeneSobe());
-		SobaricaManager.getInstance().sredjenaSoba(SobaManager.sobe.get(113), SobaricaManager.sobarice.get("janaSobarica"));
+		SobaricaManager.getInstance().sredjenaSoba(SobaManager.sobe.get(112), SobaricaManager.sobarice.get("janaSobarica"));
 		System.out.println(SobaricaManager.sobarice.get("janaSobarica").getDodeljeneSobe());
 		
 		System.out.println("Ana rezervacije");
@@ -156,6 +156,32 @@ public class meni {
 	         System.out.println(failure.toString());
 	      }
 		System.out.println(result.wasSuccessful());
+		
+		result = JUnitCore.runClasses(CenovnikTests.class);
+		for (Failure failure : result.getFailures()) {
+	         System.out.println(failure.toString());
+	      }
+		System.out.println(result.wasSuccessful());
+		
+		result = JUnitCore.runClasses(RezervacijaTests.class);
+		for (Failure failure : result.getFailures()) {
+	         System.out.println(failure.toString());
+	      }
+		System.out.println(result.wasSuccessful());
+		
+		result = JUnitCore.runClasses(SobaTests.class);
+		for (Failure failure : result.getFailures()) {
+	         System.out.println(failure.toString());
+	      }
+		System.out.println(result.wasSuccessful());
+		
+		
+		/*result = JUnitCore.runClasses(FileTests.class);
+		for (Failure failure : result.getFailures()) {
+	         System.out.println(failure.toString());
+	    }
+		System.out.println(result.wasSuccessful());*/
+		
 		
 		LoginView loginWindow = new LoginView();
 		

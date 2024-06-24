@@ -36,7 +36,6 @@ public class SobaManager {
 	
 	public ArrayList<Soba> slobodneSobeCheckIn(String tipSobe){
 		ArrayList<Soba> slobodne = new ArrayList<Soba>();
-		System.out.println(this.sobe);
 		for(Soba s:this.sobe.values()) {
 			if(s.getStatus().equals(StatusSobe.SLOBODNA) && s.getNazivSobe().equals(tipSobe)) {
 				slobodne.add(s);
@@ -179,7 +178,7 @@ public class SobaManager {
 			}
 		}
 		if (sobePoTipu.isEmpty()) {
-			System.out.println("Nema slbodnih soba");
+			//System.out.println("Nema slbodnih soba");
 			return false;
 		}
 		
@@ -189,7 +188,7 @@ public class SobaManager {
 			}
 			
 			if (sobePoTipu.isEmpty()) {
-				System.out.println("Nema slobodnih soba");
+				//System.out.println("Nema slobodnih soba");
 				return false;
 			}
 			
@@ -198,13 +197,13 @@ public class SobaManager {
 			}
 		}
 		if (sobePoTipu.isEmpty()) {
-			System.out.println("Nema slobodnih soba");
+			//System.out.println("Nema slobodnih soba");
 			return false;
 		}
 		
-		for(Soba s:sobePoTipu) {
+		/*for(Soba s:sobePoTipu) {
 			System.out.println(s);
-		}
+		}*/
 		return true;
 	}
 	

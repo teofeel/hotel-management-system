@@ -100,7 +100,7 @@ public class CenovnikManager {
 		
 	}
 	
-	public void obrisiUslugu(String nazivUsluge) {
+	public String obrisiUslugu(String nazivUsluge) {
 		try {
 			for(Cenovnik c : this.cenovnici) {
 				for (DodatneUsluge du : c.getDodatneUsluge().values()) {
@@ -112,8 +112,10 @@ public class CenovnikManager {
 			}
 			RezervacijaManager.getInstance().izbaciNepostojeceUsluge(nazivUsluge);
 			
+			return "Uspenso obrisana usluga";
+			
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			return e.getMessage();
 		}
 	}
 	public String dodajNovuUslugu(String naziv, String cena) {
@@ -129,7 +131,7 @@ public class CenovnikManager {
 				
 				c.getDodatneUsluge().put(dodatnaUsluga.getNaziv(), dodatnaUsluga);
 			}
-			return "Nova dodatne usluga je dodata u cenovnike";
+			return "Nova usluga je dodata u cenovnike";
 		}catch(Exception e) {
 			return e.getMessage();
 		}

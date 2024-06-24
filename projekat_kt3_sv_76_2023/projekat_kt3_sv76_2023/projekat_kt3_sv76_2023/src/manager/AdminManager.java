@@ -391,9 +391,4 @@ public class AdminManager {
 		}
 	}
 	
-	public void dispose() {
-		instance = new AdminManager();
-
-	}
-	
 }

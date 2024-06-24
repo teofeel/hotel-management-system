@@ -29,14 +29,25 @@ public class RezervacijaManager {
 		return rezervacijeCekanje;
 	}
 	
-	public void izbaciNepostojeceUsluge(String nazivUsluge) {
-		for(Rezervacija rez:this.rezervacije) {
-			for(DodatneUsluge du:rez.getUsluge()) {
-				if(du.getNaziv().equals(nazivUsluge)) {
-					rez.izbaciUslugu(nazivUsluge);
+	public boolean izbaciNepostojeceUsluge(String nazivUsluge) {
+		try {
+			int br=0;
+			for(Rezervacija rez:this.rezervacije) {
+				for(DodatneUsluge du:rez.getUsluge()) {
+					if(du.getNaziv().equals(nazivUsluge)) {
+						rez.izbaciUslugu(nazivUsluge);
+						br+=1;
+					}
 				}
 			}
+			
+			if(br==0) throw new Exception();
+			
+			return true;
+		}catch(Exception e) {
+			return false;
 		}
+		
 	}
 	public void odbijNepostojeceSobe(String tip) {
 		for(Rezervacija rez:this.rezervacije) {
@@ -70,13 +81,15 @@ public class RezervacijaManager {
 	
 	public boolean izbaciSobuRezervacije(String tipSobe) {
 		try {
+			int br = 0;
 			for(Rezervacija rez:this.rezervacije) {
 				if(rez.getTipSobe().getNaziv().equals(tipSobe) && rez.getDatumDolaska().isAfter(LocalDate.now()) && rez.getStatus().equals(StatusRezervacije.POTVRDJENA)) {
 					RecepcionerManager.getInstance().izmenaStatusaRezrvacije(rez.getGost(), rez.getDatumDolaska().toString(),
 							rez.getDatumOdlaska().toString(), StatusRezervacije.POTVRDJENA);
+					br+=1;
 				}
 			}
-			
+			if(br==0) throw new Exception();
 			return true;
 		}catch(Exception e) {
 			return false;
@@ -89,7 +102,7 @@ public class RezervacijaManager {
 		for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
 			if (RezervacijaManager.rezervacije.get(i).getGost().equals(gost.getKorisnickoIme())) {
 				rezervacije.add(RezervacijaManager.rezervacije.get(i));
-				System.out.println(RezervacijaManager.rezervacije.get(i).toString());
+				//System.out.println(RezervacijaManager.rezervacije.get(i).toString());
 			}
 		}
 		return rezervacije;

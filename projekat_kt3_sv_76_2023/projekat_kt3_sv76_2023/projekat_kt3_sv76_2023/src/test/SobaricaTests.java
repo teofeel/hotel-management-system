@@ -35,7 +35,7 @@ public class SobaricaTests {
 	
 	@Test
 	public void dodeliSobuMetoda() {
-		Soba s = new Soba(190909, TipSobeEnum.TROKREVETNA.toString());
+		Soba s = new Soba(114, TipSobeEnum.TROKREVETNA.toString());
 		
 		String poruka = sm.dodeliSobu(s);
 		assertEquals("Soba nije markirana za sredjivanje", poruka);

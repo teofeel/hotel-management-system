@@ -18,7 +18,11 @@ import entity.*;
 
 public class RecepcionerTests {
 	public static RecepcionerManager rm;
-
+	public static GostManager gm = GostManager.getInstance();
+	public static CenovnikManager cm = CenovnikManager.getInstance();
+	public static SobaricaManager sm = SobaricaManager.getInstance();
+	public static SobaManager sobam = SobaManager.getInstance();
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception{
 		System.out.println("Pocetak recepcioner testa");
@@ -47,7 +51,7 @@ public class RecepcionerTests {
 		
 		ArrayList<DodatneUsluge> usluge = new ArrayList<DodatneUsluge>();
 		
-		String poruka1 = GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get("testCehckInRez@example.com"), CenovnikManager.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-01-01", "2025-01-03", usluge);
+		String poruka1 = GostManager.getInstance().zahtevRezervacija(gm.gosti.get("testCehckInRez@example.com"), cm.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-01-01", "2025-01-03", usluge);
 		assertEquals("Zahtev je poslat", poruka1);
 		
 		String poruka2 = rm.izmenaStatusaRezrvacije("testCehckInRez@example.com", "2025-01-01", "2025-01-03", StatusRezervacije.POTVRDJENA);
@@ -70,13 +74,13 @@ public class RecepcionerTests {
 		
 		ArrayList<DodatneUsluge> usluge = new ArrayList<DodatneUsluge>();
 		
-		String poruka1 = GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get("testIzmenaStatusa@example.com"), CenovnikManager.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-02-01", "2025-02-03", usluge);
+		String poruka1 = GostManager.getInstance().zahtevRezervacija(gm.gosti.get("testIzmenaStatusa@example.com"), cm.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-02-01", "2025-02-03", usluge);
 		assertEquals("Zahtev je poslat", poruka1);
 		
 		String poruka2 = rm.izmenaStatusaRezrvacije("testIzmenaStatusa@example.com", "2025-02-01", "2025-02-03", StatusRezervacije.POTVRDJENA);
 		assertEquals("Status je izmenjen", poruka2);
 		
-		String poruka3 = GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get("testIzmenaStatusa@example.com"), CenovnikManager.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-02-01", "2025-02-03", usluge);
+		String poruka3 = GostManager.getInstance().zahtevRezervacija(gm.gosti.get("testIzmenaStatusa@example.com"), cm.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-02-01", "2025-02-03", usluge);
 		assertEquals("Zahtev je poslat", poruka3);
 		
 		String poruka4 = rm.izmenaStatusaRezrvacije("testIzmenaStatusa@example.com", "2025-04-01", "2025-04-03", StatusRezervacije.POTVRDJENA);
@@ -93,25 +97,25 @@ public class RecepcionerTests {
 		
 		ArrayList<DodatneUsluge> usluge = new ArrayList<DodatneUsluge>();
 		
-		String poruka1 = GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get("testDodatnaUsluga@example.com"), CenovnikManager.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-07-01", "2025-07-03", usluge);
+		String poruka1 = GostManager.getInstance().zahtevRezervacija(gm.gosti.get("testDodatnaUsluga@example.com"), cm.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-07-01", "2025-07-03", usluge);
 		assertEquals("Zahtev je poslat", poruka1);
 		
-		String poruka2 = rm.dodajUsluguNaRezervaciju(CenovnikManager.cenovnici.get(0).getDodatneUsluge().get("Dorucak"), "testDodatnaUsluga@example.com", "2025-07-01", "2025-07-03");
+		String poruka2 = rm.dodajUsluguNaRezervaciju(cm.cenovnici.get(0).getDodatneUsluge().get("Dorucak"), "testDodatnaUsluga@example.com", "2025-07-01", "2025-07-03");
 		assertEquals("Uspesno dodata usluga", poruka2);
 		
-		String poruka3 = rm.izbaciUsluguSaRezervacije ("testDodatnaUsluga@example.com", CenovnikManager.cenovnici.get(0).getDodatneUsluge().get("Dorucak"), "2025-07-01", "2025-07-03");
+		String poruka3 = rm.izbaciUsluguSaRezervacije ("testDodatnaUsluga@example.com", cm.cenovnici.get(0).getDodatneUsluge().get("Dorucak"), "2025-07-01", "2025-07-03");
 		assertEquals("Uspesno izbacena usluga", poruka3);
 	}
 	
 	
 	private void checkOutMetoda() {
-		String poruka = rm.checkOUTProces(SobaManager.sobe.get(113));
+		String poruka = rm.checkOUTProces(sobam.sobe.get(113));
 		assertEquals("Check out obavljen",poruka);
 		
-		String poruka1 = SobaricaManager.getInstance().sredjenaSoba(SobaManager.sobe.get(114), SobaricaManager.sobarice.get("janaSobarica"));
+		String poruka1 = sm.sredjenaSoba(sobam.sobe.get(114), sm.sobarice.get("janaSobarica"));
 		assertEquals("Soba nije markirana za sredjivanje",poruka1);
 		
-		String poruka2 = SobaricaManager.getInstance().sredjenaSoba(SobaManager.sobe.get(113), SobaricaManager.sobarice.get("janaSobarica"));
+		String poruka2 = sm.sredjenaSoba(sobam.sobe.get(113), sm.sobarice.get("janaSobarica"));
 		assertEquals("Soba je sredjena",poruka2);
 	}
 }
