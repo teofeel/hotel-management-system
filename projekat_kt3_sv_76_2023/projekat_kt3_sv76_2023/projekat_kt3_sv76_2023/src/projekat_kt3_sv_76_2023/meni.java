@@ -1,13 +1,18 @@
 package projekat_kt3_sv_76_2023;
 import java.io.*;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 import java.time.LocalDate;
 import java.util.*;
+
 
 import enumi.*;
 import controller.*;
 import entity.*;
 import views.*;
 import manager.*;
+import test.*;
 public class meni {
 	public static void main(String[] args) {
 		
@@ -127,7 +132,29 @@ public class meni {
 		
 		FileManager.getInstance().upisiPodatke();
 		
+		Result result = JUnitCore.runClasses(AdminTests.class);
+		for (Failure failure : result.getFailures()) {
+	         System.out.println(failure.toString());
+	      }
+		System.out.println(result.wasSuccessful());
+		
+		
+		result = JUnitCore.runClasses(RecepcionerTests.class);
+		for (Failure failure : result.getFailures()) {
+	         System.out.println(failure.toString());
+	      }
+		System.out.println(result.wasSuccessful());
+		
+		result = JUnitCore.runClasses(SobaricaTests.class);
+		for (Failure failure : result.getFailures()) {
+	         System.out.println(failure.toString());
+	      }
+		System.out.println(result.wasSuccessful());
+		
 		LoginView loginWindow = new LoginView();
+		
+		
+		
 		//new LoginController(loginWindow);
 	
 		

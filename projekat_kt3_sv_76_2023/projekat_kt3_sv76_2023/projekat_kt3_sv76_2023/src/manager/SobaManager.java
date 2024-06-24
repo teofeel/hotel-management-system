@@ -59,6 +59,10 @@ public class SobaManager {
 		if (sobePoTipu.isEmpty()) return new ArrayList<Soba>();
 		
 		for (Rezervacija rezervacija : RezervacijaManager.rezervacije) {
+			if(rezervacija.getStatus().equals(StatusRezervacije.POTVRDJENA) && rezervacija.getDatumDolaska().equals(rez.getDatumDolaska()) && rezervacija.getDatumOdlaska().equals(rez.getDatumOdlaska())) {
+				sobePoTipu.remove(0);
+			}
+			
 			if (rezervacija.getDatumOdlaska().minusDays(1).isBefore(rez.getDatumDolaska()) || rezervacija.getDatumDolaska().isAfter(rez.getDatumOdlaska())) {
 				continue;
 			}
@@ -74,6 +78,8 @@ public class SobaManager {
 			if (rezervacija.getTipSobe().getNaziv().equals(rez.getTipSobe().getNaziv()) && rezervacija.getStatus().equals(StatusRezervacije.POTVRDJENA)){
 				sobePoTipu.remove(0);
 			}
+			
+			
 		}
 		if (sobePoTipu.isEmpty()) {
 			return new ArrayList<Soba>();

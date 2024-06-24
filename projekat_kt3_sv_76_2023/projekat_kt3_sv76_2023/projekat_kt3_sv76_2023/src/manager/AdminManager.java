@@ -172,7 +172,6 @@ public class AdminManager {
 	public String izmeniPodatkeGosta(String korisnickoIme, String novoKorisnickoIme, String ime, String prezime, String pol,String datum, String telefon, 
 			String adresa, String lozinka) {
 		try {
-			System.out.println(GostManager.gosti);
 			if(!GostManager.gosti.containsKey(korisnickoIme)) throw new Exception("Gost ne postoji");
 			Gost gost = GostManager.gosti.get(korisnickoIme);
 			
@@ -218,8 +217,10 @@ public class AdminManager {
 		try {
 			if(vaziOD.equals("") || vaziDO.equals("")) throw new Exception("Sva polja moraju biti popunjena");
 			
-			if(LocalDate.parse(vaziOD).isBefore(LocalDate.now()) || LocalDate.parse(vaziDO).isBefore(LocalDate.now()))
+			if(LocalDate.parse(vaziOD).isBefore(LocalDate.now()) || LocalDate.parse(vaziDO).isBefore(LocalDate.now())) {
 				throw new Exception("Cenovnik se moze definisati samo sa naredne datume");
+			}
+				
 				
 			if(CenovnikManager.cenovnici.size()==0) {
 				HashMap<String, TipSobe> tipoviSoba = new HashMap<String, TipSobe>();
@@ -388,6 +389,11 @@ public class AdminManager {
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	public void dispose() {
+		instance = new AdminManager();
+
 	}
 	
 }

@@ -69,9 +69,10 @@ public class SobaricaManager {
 			for(Sobarica s:this.sobarice.values()) {
 				if(s.getDodeljeneSobe().containsKey(sifra)) {
 					s.getDodeljeneSobe().remove(sifra);
+					return true;
 				}	
 			}
-			return true;
+			throw new Exception();
 		}catch(Exception e) {
 			return false;
 		}
