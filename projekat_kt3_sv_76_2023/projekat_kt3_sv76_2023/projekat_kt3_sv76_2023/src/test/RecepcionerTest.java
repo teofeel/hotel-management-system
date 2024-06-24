@@ -59,8 +59,7 @@ public class RecepcionerTest {
 		String poruka2 = rm.izmenaStatusaRezrvacije("testCehckInRez@example.com", "2025-01-01", "2025-01-03", StatusRezervacije.POTVRDJENA);
 		assertEquals("Status je izmenjen", poruka2);
 		
-		
-		String poruka3 = rm.checkInProcesRezervacija("testCehckInRez@example.com", LocalDate.parse("2025-01-01"), LocalDate.parse("2025-01-03"), SobaManager.sobe.get(155));
+		String poruka3 = rm.checkInProcesRezervacija("testCehckInRez@example.com", LocalDate.parse("2025-01-01"), LocalDate.parse("2025-01-03"), SobaManager.sobe.get(111));
 		assertEquals("Tipovi se ne poklapaju", poruka3);
 		
 		String poruka4 = rm.checkInProcesRezervacija("testCehckInRez@example.com", LocalDate.parse("2025-01-01"), LocalDate.parse("2025-01-03"), SobaManager.sobe.get(113));
@@ -108,7 +107,6 @@ public class RecepcionerTest {
 		String poruka3 = rm.izbaciUsluguSaRezervacije ("testDodatnaUsluga@example.com", cm.cenovnici.get(0).getDodatneUsluge().get("Dorucak"), "2025-07-01", "2025-07-03");
 		assertEquals("Uspesno izbacena usluga", poruka3);
 	}
-	
 	
 	private void checkOutMetoda() {
 		String poruka = rm.checkOUTProces(sobam.sobe.get(113));

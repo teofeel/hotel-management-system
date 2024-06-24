@@ -49,7 +49,7 @@ public class SobaManager {
 		TipSobe tipSobeRezervacije = rez.getTipSobe();
 		ArrayList<Soba> sobePoTipu = new ArrayList<Soba>();
 		
-		for (Soba soba : sobe.values()) {
+		for (Soba soba : this.sobe.values()) {
 			if(soba.getNazivSobe().equals(tipSobeRezervacije.getNaziv()) && soba.getStatus().equals(StatusSobe.SLOBODNA)) {
 				sobePoTipu.add(soba);
 			}

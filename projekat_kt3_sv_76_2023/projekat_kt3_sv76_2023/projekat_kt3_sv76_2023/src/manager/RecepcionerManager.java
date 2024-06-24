@@ -46,7 +46,6 @@ public class RecepcionerManager {
 				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().equals(datumDolaska) 
 						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().equals(datumOdlaska)) {
 					
-					System.out.println(RezervacijaManager.rezervacije.get(i).getTipSobe().getNaziv());
 					if(!soba.getNazivSobe().equals(RezervacijaManager.rezervacije.get(i).getTipSobe().getNaziv())) throw new Exception("Tipovi se ne poklapaju");
 					
 					RezervacijaManager.rezervacije.get(i).setSoba(soba);
@@ -78,6 +77,7 @@ public class RecepcionerManager {
 					
 					if (SobaManager.getInstance().slobodneSobe(RezervacijaManager.rezervacije.get(i)).size() == 0 && status.equals(StatusRezervacije.POTVRDJENA) ) {
 						RezervacijaManager.rezervacije.get(i).setStatus(StatusRezervacije.ODBIJENA);
+						
 						throw new Exception("Nema slobodne sobe, rezervacja odbijena");
 					}
 					

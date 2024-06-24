@@ -160,13 +160,13 @@ public class AdminTest {
 		String poruka = am.dodajSobu("166", TipSobeEnum.JEDNOKREVETNA);
 		assertEquals("Uspesno dodata soba", poruka);
 		
-		String poruka1 = am.izmeniSobu("199", "177", "nekitip");
+		String poruka1 = am.izmeniSobu("199", "177", TipSobeEnum.JEDNOKREVETNA.toString());
 		assertEquals("Sifra sobe ne postoji", poruka1);
 		
-		String poruka2 = am.izmeniSobu("166", "112", "nekitip");
+		String poruka2 = am.izmeniSobu("166", "112", TipSobeEnum.JEDNOKREVETNA.toString());
 		assertEquals("Nova sifra sobe je vec registrovana u sistemu", poruka2);
 		
-		String poruka3 = am.izmeniSobu("166", "177", "nekitip");
+		String poruka3 = am.izmeniSobu("166", "177", TipSobeEnum.JEDNOKREVETNA.toString());
 		assertEquals("Podaci uspesno izmenjeni", poruka3);
 		
 		String poruka4 = am.dodajDodatnoSoba(SobaManager.sobe.get(177), "slon");
