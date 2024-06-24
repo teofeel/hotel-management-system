@@ -1,24 +1,22 @@
 package test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
+import java.time.LocalDate;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.time.LocalDate;
-import java.util.*;
-
-import enumi.StatusRezervacije;
+import entity.Soba;
+import entity.Sobarica;
 import enumi.StatusSobe;
 import enumi.StrucnaSprema;
 import enumi.TipSobeEnum;
-import manager.*;
-import entity.*;
+import manager.SobaricaManager;
 
-public class SobaricaTests {
+public class SobaricaTest {
+
 	public static SobaricaManager sm;
 
 	@BeforeClass
@@ -75,4 +73,5 @@ public class SobaricaTests {
 		String poruka1 = sm.sredjenaSoba(s, sobarica);
 		assertEquals("Soba je sredjena", poruka1);
 	}
+
 }

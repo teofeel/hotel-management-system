@@ -1,25 +1,21 @@
 package test;
 
-import java.util.*;
+import static org.junit.Assert.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNotNull;
-
-import java.time.LocalDate;
-
 import org.junit.Test;
-import enumi.*;
-import manager.*;
-import entity.*;
 
-public class SobaTests {
+import entity.Soba;
+import enumi.TipSobeEnum;
+import manager.GostManager;
+import manager.RezervacijaManager;
+import manager.SobaManager;
+
+public class SobaTest {
 	public static SobaManager sm;
 	public static GostManager gm = GostManager.getInstance();
 	public static RezervacijaManager rm = RezervacijaManager.getInstance();

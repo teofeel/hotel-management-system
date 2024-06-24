@@ -1,24 +1,18 @@
 package test;
-import java.util.*;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNotNull;
-
-import java.time.LocalDate;
-
 import org.junit.Test;
-import enumi.*;
-import manager.*;
-import entity.*;
 
-public class RezervacijaTests {
+import entity.Rezervacija;
+import manager.GostManager;
+import manager.RezervacijaManager;
+
+public class RezervacijaTest {
 	public static RezervacijaManager rm;
 	public static GostManager gm = GostManager.getInstance();
 
@@ -67,4 +61,5 @@ public class RezervacijaTests {
 		boolean izbacena = rm.izbaciNepostojeceUsluge("Mala soba");
 		assertTrue(!izbacena);
 	}
+
 }

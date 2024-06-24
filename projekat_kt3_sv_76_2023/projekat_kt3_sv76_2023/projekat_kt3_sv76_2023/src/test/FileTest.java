@@ -1,17 +1,39 @@
 package test;
 
-import org.junit.*;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.time.LocalDate;
-import java.util.*;
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import manager.*;
-import entity.*;
-import enumi.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class FileTests {
+import entity.Administrator;
+import entity.Cenovnik;
+import entity.DodatneUsluge;
+import entity.Gost;
+import entity.Recepcioner;
+import entity.Rezervacija;
+import entity.Soba;
+import entity.Sobarica;
+import entity.TipSobe;
+import enumi.StatusRezervacije;
+import enumi.StatusSobe;
+import enumi.StrucnaSprema;
+import manager.AdminManager;
+import manager.CenovnikManager;
+import manager.FileManager;
+import manager.GostManager;
+import manager.RecepcionerManager;
+import manager.RezervacijaManager;
+import manager.SobaManager;
+import manager.SobaricaManager;
+
+public class FileTest {
 	private static FileManager fileManager;
     private static File testDataDir;
 
@@ -144,4 +166,5 @@ public class FileTests {
         assertTrue(RecepcionerManager.recepcioneri.isEmpty());
         assertTrue(SobaricaManager.sobarice.isEmpty());
     }
+
 }

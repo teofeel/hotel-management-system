@@ -1,22 +1,18 @@
 package test;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import enumi.*;
-import manager.*;
-import entity.*;
 
-public class CenovnikTests {
+import entity.Cenovnik;
+import enumi.TipSobeEnum;
+import manager.CenovnikManager;
+
+public class CenovnikTest {
 	public static CenovnikManager cm;
 
 	@BeforeClass
@@ -84,5 +80,5 @@ public class CenovnikTests {
 		Cenovnik c1 = cm.getCenovnik(LocalDate.parse("2024-01-02"),LocalDate.parse("2024-12-29"));
 		assertNotSame(cm.cenovnici.get(0), c1);
 	}
-	
+
 }

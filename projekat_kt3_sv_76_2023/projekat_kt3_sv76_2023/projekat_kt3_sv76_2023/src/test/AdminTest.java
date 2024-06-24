@@ -1,16 +1,16 @@
 package test;
+
+import static org.junit.Assert.*;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+
 import enumi.StrucnaSprema;
 import enumi.TipSobeEnum;
-import manager.*;
-public class AdminTests {
+import manager.AdminManager;
+
+public class AdminTest {
 
 	public static AdminManager am;
 
@@ -108,4 +108,5 @@ public class AdminTests {
 		String poruka2 = am.dodajSobu("", TipSobeEnum.JEDNOKREVETNA);
 		assertEquals("Sva polja moraju biti popunjena", poruka2);
 	}
+
 }

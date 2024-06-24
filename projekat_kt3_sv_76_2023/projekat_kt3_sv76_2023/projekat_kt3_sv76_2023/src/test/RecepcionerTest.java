@@ -1,22 +1,24 @@
 package test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.time.LocalDate;
-import java.util.*;
-
+import entity.DodatneUsluge;
 import enumi.StatusRezervacije;
-import enumi.StrucnaSprema;
 import enumi.TipSobeEnum;
-import manager.*;
-import entity.*;
+import manager.CenovnikManager;
+import manager.GostManager;
+import manager.RecepcionerManager;
+import manager.SobaManager;
+import manager.SobaricaManager;
 
-public class RecepcionerTests {
+public class RecepcionerTest {
 	public static RecepcionerManager rm;
 	public static GostManager gm = GostManager.getInstance();
 	public static CenovnikManager cm = CenovnikManager.getInstance();
@@ -118,4 +120,5 @@ public class RecepcionerTests {
 		String poruka2 = sm.sredjenaSoba(sobam.sobe.get(113), sm.sobarice.get("janaSobarica"));
 		assertEquals("Soba je sredjena",poruka2);
 	}
+
 }
