@@ -73,11 +73,10 @@ public class RecepcionerManager {
 		try {
 			for(int i=0;i<RezervacijaManager.rezervacije.size();i++) {
 				if(RezervacijaManager.rezervacije.get(i).getGost().equals(gost) && RezervacijaManager.rezervacije.get(i).getDatumDolaska().toString().equals(datumDolaska) 
-						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska)) {
+						&& RezervacijaManager.rezervacije.get(i).getDatumOdlaska().toString().equals(datumOdlaska) && RezervacijaManager.rezervacije.get(i).getStatus().equals(StatusRezervacije.NA_CEKANJU)) {
 					
 					if (SobaManager.getInstance().slobodneSobe(RezervacijaManager.rezervacije.get(i)).size() == 0 && status.equals(StatusRezervacije.POTVRDJENA) ) {
 						RezervacijaManager.rezervacije.get(i).setStatus(StatusRezervacije.ODBIJENA);
-						
 						throw new Exception("Nema slobodne sobe, rezervacja odbijena");
 					}
 					

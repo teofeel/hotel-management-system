@@ -6,6 +6,8 @@ import java.util.HashMap;
 public class Sobarica extends Zaposleni{
 	private HashMap<Integer, Soba> dodeljeneSobe;
 	
+	//private ArrayList<LocalDate> sredjeneSobe;
+	
 	public Sobarica() {super();}
 	public Sobarica(String ime, String prezime, String pol,LocalDate datum, String telefon, String adresa, 
 			String korisnickoIme, String lozinka, StrucnaSprema sprema, int staz, String tip) {
@@ -21,11 +23,12 @@ public class Sobarica extends Zaposleni{
 	public boolean removeSoba(Soba s) {
 		try {
 			this.dodeljeneSobe.remove(s.getSifra());
+			//sredjeneSobe.add(LocalDate.now());
+			// i onda u cuvanju i upisivanju upise
 			return true;
 		}catch(Exception e) {
 			return false;
 		}
-		
 		
 	}
 	
