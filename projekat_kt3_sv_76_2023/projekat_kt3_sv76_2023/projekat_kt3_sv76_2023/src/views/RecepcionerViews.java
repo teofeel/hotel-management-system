@@ -594,12 +594,9 @@ public class RecepcionerViews extends JFrame{
 		sorter.setRowFilter(RowFilter.regexFilter("POTVRDJENA", 6));
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		// Custom RowFilter to filter dates after the current day
 		RowFilter<RezervacijaTableModel, Object> customFilter = new RowFilter<RezervacijaTableModel, Object>() {
 		    @Override
 		    public boolean include(Entry<? extends RezervacijaTableModel, ? extends Object> entry) {
-		        // Get the date from the table in the specified column (e.g., column 3)
-		       // String dateString = (String) entry.getValue(3);
 		        LocalDate date = (LocalDate) entry.getValue(3);
 		        StatusRezervacije sr = (StatusRezervacije) entry.getValue(6);
 		        //Soba s = (Soba) entry.getValue(2);

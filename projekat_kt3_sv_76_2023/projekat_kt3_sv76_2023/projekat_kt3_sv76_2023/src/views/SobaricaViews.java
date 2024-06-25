@@ -8,6 +8,8 @@ import manager.*;
 import enumi.*;
 
 import javax.swing.*;
+import javax.swing.RowFilter.Entry;
+import javax.swing.table.TableRowSorter;
 
 import controller.*;
 
@@ -65,7 +67,51 @@ public class SobaricaViews extends JFrame{
 	
 	private JPanel pregledSobaPanel() {
 		JPanel pregledSobaPanel = new JPanel(new BorderLayout());
-	    pregledSobaPanel.add(new JLabel("Pregled soba"), BorderLayout.NORTH);
+		
+		SobaTableModel model = new SobaTableModel();
+		JTable sobeTable = new JTable(model);
+		TableRowSorter<SobaTableModel> sorter = new TableRowSorter<>(model);
+		sobeTable.setRowSorter(sorter);
+		
+		RowFilter<SobaTableModel, Object> customFilter = new RowFilter<SobaTableModel, Object>() {
+		    @Override
+		    public boolean include(Entry<? extends SobaTableModel, ? extends Object> entry) {
+		       for(Soba s:SobaricaManager.sobarice.get(korisnickoIme).getDodeljeneSobe().values()) {
+		    	   if(s.getSifra() == (int) entry.getValue(0))
+		    		   return true;
+		       }
+		       return false;
+		    }
+		};
+		sorter.setRowFilter(customFilter);
+		
+		JScrollPane scrollPanel =  new JScrollPane(sobeTable);
+		scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		pregledSobaPanel.add(scrollPanel);
+		
+		JPanel buttonPanel = new JPanel();
+		JButton srediSobuButton = new JButton("Sredjena soba");
+		buttonPanel.add(srediSobuButton);
+		pregledSobaPanel.add(buttonPanel, BorderLayout.PAGE_START);
+        srediSobuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	try {
+            		Soba soba = model.getSobe(sobeTable.convertRowIndexToModel(sobeTable.getSelectedRow()) );
+            		
+            		String poruka = SobaricaManager.getInstance().sredjenaSoba(soba, SobaricaManager.sobarice.get(korisnickoIme));
+                    JOptionPane.showMessageDialog(pregledSobaPanel, poruka);
+                    
+                    sorter.setRowFilter(customFilter);
+                    sobeTable.updateUI();
+            	}catch(Exception err) {
+            		JOptionPane.showMessageDialog(buttonPanel, "Nije selektovan red tabele");
+            	}
+                
+                
+            }
+        });
+	    /*pregledSobaPanel.add(new JLabel("Pregled soba"), BorderLayout.NORTH);
 
 	    HashMap<Integer, Soba> sobe = SobaricaManager.sobarice.get(korisnickoIme).getDodeljeneSobe();
 	    System.out.println(SobaricaManager.sobarice.get(korisnickoIme).getSredjeneSobe());
@@ -99,7 +145,7 @@ public class SobaricaViews extends JFrame{
 	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-	    pregledSobaPanel.add(scrollPane, BorderLayout.CENTER);
+	    pregledSobaPanel.add(scrollPane, BorderLayout.CENTER);*/
 
 	    return pregledSobaPanel;
 	}
