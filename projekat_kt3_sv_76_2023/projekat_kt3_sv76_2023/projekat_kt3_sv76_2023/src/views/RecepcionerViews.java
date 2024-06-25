@@ -303,29 +303,6 @@ public class RecepcionerViews extends JFrame{
 			}
 	    });
 	    
-	    
-	    JButton sortNajmanjeCena = new JButton("Sort po najmanjoj ceni");
-	    sortNajmanjeCena.addActionListener(new ActionListener() {
-	    	@Override
-			public void actionPerformed(ActionEvent e) {
-	    		ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
-	    		sorter.setSortKeys(new ArrayList<>());
-	    	    sortKeys.add(new RowSorter.SortKey(5, SortOrder.ASCENDING));
-	    		sorter.setSortKeys(sortKeys);
-			}
-	    });
-	    JButton sortNajvecaButton = new JButton("Sort po najvecoj ceni");
-	    sortNajvecaButton.addActionListener(new ActionListener() {
-	    	@Override
-			public void actionPerformed(ActionEvent e) {
-	    		ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
-	    		sorter.setSortKeys(new ArrayList<>());
-	    		
-	    	    sortKeys.add(new RowSorter.SortKey(5, SortOrder.DESCENDING));
-	    		sorter.setSortKeys(sortKeys);
-			}
-	    });
-	    
 	    JButton removeSortButton = new JButton("Unsorted");
 	    removeSortButton.addActionListener(new ActionListener() {
 	    	@Override
@@ -382,11 +359,6 @@ public class RecepcionerViews extends JFrame{
 	    filterPanel.add(filterButton, gbc);
 	    gbc.gridx = 1;
 	    filterPanel.add(removeSortButton, gbc);
-	    
-	    gbc.gridx = 2;
-	    filterPanel.add(sortNajmanjeCena, gbc);
-	    gbc.gridy = 3;
-	    filterPanel.add(sortNajvecaButton, gbc);
 	    
 	    return filterPanel;
 	}

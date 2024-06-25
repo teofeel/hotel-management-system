@@ -111,41 +111,6 @@ public class SobaricaViews extends JFrame{
                 
             }
         });
-	    /*pregledSobaPanel.add(new JLabel("Pregled soba"), BorderLayout.NORTH);
-
-	    HashMap<Integer, Soba> sobe = SobaricaManager.sobarice.get(korisnickoIme).getDodeljeneSobe();
-	    System.out.println(SobaricaManager.sobarice.get(korisnickoIme).getSredjeneSobe());
-	    JPanel sobePanel = new JPanel(new GridBagLayout());
-	    GridBagConstraints gbc = new GridBagConstraints();
-	    gbc.insets = new Insets(5, 5, 5, 5);
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
-
-	    int row = 0;
-	    for (Soba soba : sobe.values()) {
-	        gbc.gridy = row++;
-	        gbc.gridx = 0;
-	        sobePanel.add(new JLabel(Integer.toString(soba.getSifra())), gbc);
-
-	        gbc.gridx = 1;
-	        JButton srediSobuButton = new JButton("Sredjena soba");
-	        sobePanel.add(srediSobuButton, gbc);
-
-	        srediSobuButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                String poruka = SobaricaManager.getInstance().sredjenaSoba(soba, SobaricaManager.sobarice.get(korisnickoIme));
-	                JOptionPane.showMessageDialog(pregledSobaPanel, poruka);
-	                sobePanel.revalidate();
-	                sobePanel.repaint();
-	            }
-	        });
-	    }
-
-	    JScrollPane scrollPane = new JScrollPane(sobePanel);
-	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-	    pregledSobaPanel.add(scrollPane, BorderLayout.CENTER);*/
 
 	    return pregledSobaPanel;
 	}
