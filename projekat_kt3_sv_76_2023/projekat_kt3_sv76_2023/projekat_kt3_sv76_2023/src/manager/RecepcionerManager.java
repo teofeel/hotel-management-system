@@ -120,6 +120,21 @@ public class RecepcionerManager {
 		}
 	}
 	
+	public String zahtevRezervacije(String gost, TipSobe tipSobe, int brOsoba,String datumDolaska, String datumOdlaska,ArrayList<DodatneUsluge> usluga) {
+		try {
+			LocalDate datumOD = LocalDate.parse(datumDolaska);
+			LocalDate datumDO = LocalDate.parse(datumOdlaska);
+			
+			if(datumOD.isAfter(datumDO)) throw new Exception();
+			
+			RezervacijaManager.rezervacije.add(new Rezervacija(gost, tipSobe, null,  brOsoba, datumOD, datumDO, usluga));
+			
+			return "Zahtev je poslat";
+		}catch(Exception e) {
+			return "Nije moguce napraviti rezervaciju";
+		}
+	}
+	
 	public String checkOUTProces(Soba soba) {
 		try {
 			if (!soba.getStatus().equals(StatusSobe.ZAUZETO)) throw new Exception("Ne moze se izvrsiti check out za ovu sobu");

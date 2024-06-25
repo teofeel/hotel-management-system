@@ -95,11 +95,18 @@ public class GostTest {
 	}
 	
 	@Test
+	public void mojTrosak() {
+		String trosak = gm.ukupanTrosak("ana@example.com");
+		
+		assertEquals("1100", trosak);
+	}
+	
+	@Test
 	public void login() {
 		boolean login = gm.gosti.get("milica@example.com").checkLogin("milica@example.com", "sifra");
 		assertTrue(!login);
 		
-		login = gm.gosti.get("milica@example.com").checkLogin("milica@example.com", "64324732");
+		login = gm.gosti.get("milica@example.com").checkLogin("milica@example.com", "1");
 		assertTrue(login);
 		
 	}

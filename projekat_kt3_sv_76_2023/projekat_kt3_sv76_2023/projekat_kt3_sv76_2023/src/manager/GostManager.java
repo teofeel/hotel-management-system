@@ -85,6 +85,23 @@ public class GostManager {
 		}
 	}
 	
+	public String ukupanTrosak(String gost) {
+		try {
+			float trosak = 0;
+			for(Rezervacija rez:RezervacijaManager.rezervacije) {
+				if(rez.getStatus().equals(StatusRezervacije.ODBIJENA))
+					continue; 
+				
+				if(rez.getGost().equals(gost)) {
+					trosak +=  rez.getCena();
+				}
+			}
+			return Float.toString(trosak);
+		}catch(Exception e) {
+			return "0";
+		}
+	}
+	
 	public String izbaciUsluguSaRezervacije(Gost gost, DodatneUsluge dodatnaUsluga, String datumDolaska, String datumOdlaska) {
 		try {
 			if (!CenovnikManager.cenovnici.get(0).getDodatneUsluge().containsKey(dodatnaUsluga.getNaziv()))

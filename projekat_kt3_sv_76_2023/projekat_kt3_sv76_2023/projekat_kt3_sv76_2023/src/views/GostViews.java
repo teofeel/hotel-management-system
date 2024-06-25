@@ -19,7 +19,8 @@ public class GostViews extends JFrame{
 	private JToolBar navbar;
 	
 	private JButton zahtevRezervacijeButton;
-	private JButton rezervacijeButton; 		
+	private JButton rezervacijeButton; 	
+	private JButton mojTrosakButton;
 	private JButton logout;
 	
 	private String korisnickoIme;
@@ -39,8 +40,7 @@ public class GostViews extends JFrame{
         
         rezervacijeButton = new JButton("Moje Rezervacije");
         rezervacijeButton.addActionListener(new NavbarButtonListener("Rezervacije"));
-        
-        
+
         logout = new JButton("Logout");
         logout.addActionListener(new ActionListener(){
 			@Override 
@@ -65,6 +65,7 @@ public class GostViews extends JFrame{
 		add(navbar,BorderLayout.NORTH);
 		add(contentPanel, BorderLayout.CENTER);
 	}
+	
 	private JPanel zahtevRezervacijePanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -296,7 +297,7 @@ public class GostViews extends JFrame{
 	        listaRezervacija.add(new JLabel(Integer.toString(rez.getBrOsoba())), gbc);
 
 	        gbc.gridx = 6;
-	        listaRezervacija.add(new JLabel(Float.toString(rez.getCena())), gbc);
+	        listaRezervacija.add(new JLabel(rez.getStatus().equals(StatusRezervacije.ODBIJENA) ? "0" : Float.toString(rez.getCena())), gbc);
 
 	        gbc.gridx = 7;
 	        JButton dodajUsluguButton = new JButton("Dodaj Uslugu");
@@ -357,7 +358,10 @@ public class GostViews extends JFrame{
 	    JScrollPane scrollPane = new JScrollPane(listaRezervacija);
 	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
+	    
+	    JLabel ukupanTrosakLabel = new JLabel("Ukupan trosak: "+GostManager.getInstance().ukupanTrosak(korisnickoIme));
+	    
+	    rezervacijePanel.add(ukupanTrosakLabel, BorderLayout.PAGE_START);
 	    rezervacijePanel.add(scrollPane, BorderLayout.CENTER);
 
 	    return rezervacijePanel;

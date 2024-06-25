@@ -85,10 +85,19 @@ public class RecepcionerTest {
 		assertEquals("Zahtev je poslat", poruka3);
 		
 		String poruka4 = rm.izmenaStatusaRezrvacije("testIzmenaStatusa@example.com", "2025-04-01", "2025-04-03", StatusRezervacije.POTVRDJENA);
-		assertEquals("Trazena rezervacija ne postoji", poruka4);
+		assertEquals("Trazena rezervacija ne postoji ili je njen status izmenjen", poruka4);
 		
 		String poruka5 = rm.izmenaStatusaRezrvacije("testIzmenaStatusa@example.com", "2025-02-01", "2025-02-03", StatusRezervacije.POTVRDJENA);
 		assertEquals("Nema slobodne sobe, rezervacja odbijena", poruka5);
+	}
+	@Test
+	public void zahtevRezervacije() {
+		ArrayList<DodatneUsluge> usluge = new ArrayList<DodatneUsluge>();
+		String poruka = rm.zahtevRezervacije("zahtevRezerevacijeTestRecp@example.com", cm.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-01-10", "2025-01-13", usluge);
+		assertEquals("Zahtev je poslat", poruka);
+		
+		String poruka1 = rm.zahtevRezervacije("zahtevRezerevacijeTestRecp@example.com", cm.cenovnici.get(0).getTipoviSoba().get(TipSobeEnum.ODVOKREVETNA_DVA.toString()), 2, "2025-01-13", "2025-01-10", usluge);
+		assertEquals("Nije moguce napraviti rezervaciju", poruka1);
 	}
 	
 	@Test
