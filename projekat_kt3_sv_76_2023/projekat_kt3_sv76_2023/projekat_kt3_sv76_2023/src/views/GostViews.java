@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.*;
+import javax.swing.table.TableRowSorter;
+
 import java.awt.event.*;
 
 import java.awt.*;
@@ -267,102 +269,94 @@ public class GostViews extends JFrame{
 	private JPanel rezervacijePanel() {
 		JPanel rezervacijePanel = new JPanel(new BorderLayout());
 	    // rezervacijePanel.add(new JLabel("Rezervacije"), BorderLayout.NORTH);
+		RezervacijaTableModel model = new RezervacijaTableModel();
+		JTable rezervacijeTable = new JTable(model);
+		
+		TableRowSorter<RezervacijaTableModel> sorter = new TableRowSorter<>(model);
+		rezervacijeTable.setRowSorter(sorter);
+		sorter.setRowFilter(RowFilter.regexFilter(korisnickoIme, 0));
+		JButton otkaziButton = new JButton("Otkazi");
+		JButton dodajUsluguButton = new JButton("Dodaj uslugu");
+		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(otkaziButton);
+		buttonPanel.add(dodajUsluguButton);
+		dodajUsluguButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	try {
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		JFrame uslugeFrame = new JFrame("Usluge");
+            		uslugeFrame.setSize(300, 300);
+            		uslugeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-	    ArrayList<Rezervacija> rezervacije = RezervacijaManager.getInstance().pregledRezervacija(GostManager.gosti.get(korisnickoIme));
-	    System.out.println(rezervacije);
-	    JPanel listaRezervacija = new JPanel(new GridBagLayout());
-	    GridBagConstraints gbc = new GridBagConstraints();
-	    gbc.insets = new Insets(5, 5, 5, 5);
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
+            		JPanel uslugePanel = new JPanel(new GridLayout(0, 2)); 
+            		updateUslugePanel(uslugePanel, uslugeFrame, rez);
 
-	    int row = 0;
-	    for (Rezervacija rez : rezervacije) {
-	        gbc.gridy = row++;
-	        gbc.gridx = 0;
-	        listaRezervacija.add(new JLabel(rez.getGost()), gbc);
+            		uslugeFrame.add(new JScrollPane(uslugePanel)); 
+            		uslugeFrame.setVisible(true);
+            		uslugeFrame.addWindowListener(new WindowAdapter() {
+            			@Override
+            	        public void windowClosed(WindowEvent e) {
+            				rezervacijeTable.updateUI();
+            	        }
+            		});
+            	
+            	}catch(Exception err) {
+            		JOptionPane.showMessageDialog(rezervacijePanel, "Nije selektovan red tabele");
+            	}
+                
+            }
 
-	        gbc.gridx = 1;
-	        listaRezervacija.add(new JLabel(rez.getStatus().toString()), gbc);
+            private void updateUslugePanel(JPanel uslugePanel, JFrame uslugeFrame, Rezervacija rez) {
+                uslugePanel.removeAll(); 
+                CenovnikManager.cenovnici.get(0).getDodatneUsluge().forEach((key, du) -> {
+                    uslugePanel.add(new JLabel(du.getNaziv()));
+                    JButton actionButton = new JButton(rez.getUsluge().contains(du) ? "Izbaci" : "Dodaj");
+                    actionButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (rez.getUsluge().contains(du)) {
+                                rez.izbaciUslugu(du.getNaziv());
+                            } else {
+                                rez.dodajUslugu(du);
+                            }
+                            updateUslugePanel(uslugePanel, uslugeFrame, rez); 
+                        }
+                    });
+                    uslugePanel.add(actionButton);
+                });
+                uslugePanel.revalidate(); 
+                uslugePanel.repaint();
+            }
+        });
 
-	        gbc.gridx = 2;
-	        listaRezervacija.add(new JLabel(rez.getTipSobe().getNaziv()), gbc);
+        otkaziButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	try {
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		
+            		String poruka = GostManager.getInstance().otkaziRezervaciju(GostManager.gosti.get(korisnickoIme),
+                            rez.getDatumDolaska().toString(), rez.getDatumOdlaska().toString());
 
-	        gbc.gridx = 3;
-	        listaRezervacija.add(new JLabel(rez.getDatumDolaska().toString()), gbc);
-
-	        gbc.gridx = 4;
-	        listaRezervacija.add(new JLabel(rez.getDatumOdlaska().toString()), gbc);
-
-	        gbc.gridx = 5;
-	        listaRezervacija.add(new JLabel(Integer.toString(rez.getBrOsoba())), gbc);
-
-	        gbc.gridx = 6;
-	        listaRezervacija.add(new JLabel(rez.getStatus().equals(StatusRezervacije.ODBIJENA) ? "0" : Float.toString(rez.getCena())), gbc);
-
-	        gbc.gridx = 7;
-	        JButton dodajUsluguButton = new JButton("Dodaj Uslugu");
-	        listaRezervacija.add(dodajUsluguButton, gbc);
-
-	        gbc.gridx = 8;
-	        JButton otkaziButton = new JButton("Otkazi");
-	        listaRezervacija.add(otkaziButton, gbc);
-
-	        dodajUsluguButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                JFrame uslugeFrame = new JFrame("Usluge");
-	                uslugeFrame.setSize(300, 300);
-	                uslugeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-	                JPanel uslugePanel = new JPanel(new GridLayout(0, 2)); 
-	                updateUslugePanel(uslugePanel, uslugeFrame, rez);
-
-	                uslugeFrame.add(new JScrollPane(uslugePanel)); 
-	                uslugeFrame.setVisible(true);
-	            }
-
-	            private void updateUslugePanel(JPanel uslugePanel, JFrame uslugeFrame, Rezervacija rez) {
-	                uslugePanel.removeAll(); 
-	                CenovnikManager.cenovnici.get(0).getDodatneUsluge().forEach((key, du) -> {
-	                    uslugePanel.add(new JLabel(du.getNaziv()));
-	                    JButton actionButton = new JButton(rez.getUsluge().contains(du) ? "Izbaci" : "Dodaj");
-	                    actionButton.addActionListener(new ActionListener() {
-	                        @Override
-	                        public void actionPerformed(ActionEvent e) {
-	                            if (rez.getUsluge().contains(du)) {
-	                                rez.izbaciUslugu(du.getNaziv());
-	                            } else {
-	                                rez.dodajUslugu(du);
-	                            }
-	                            updateUslugePanel(uslugePanel, uslugeFrame, rez); 
-	                        }
-	                    });
-	                    uslugePanel.add(actionButton);
-	                });
-	                uslugePanel.revalidate(); 
-	                uslugePanel.repaint();
-	            }
-	        });
-
-	        otkaziButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                String poruka = GostManager.getInstance().otkaziRezervaciju(GostManager.gosti.get(korisnickoIme),
-	                        rez.getDatumDolaska().toString(), rez.getDatumOdlaska().toString());
-
-	                JOptionPane.showMessageDialog(rezervacijePanel, poruka);
-	            }
-	        });
-	    }
-
-	    JScrollPane scrollPane = new JScrollPane(listaRezervacija);
-	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                    JOptionPane.showMessageDialog(rezervacijePanel, poruka);
+                    rezervacijeTable.updateUI();
+            	}catch(Exception e1) {
+            		 JOptionPane.showMessageDialog(rezervacijePanel, "Nije selektovan red tabele");
+            	}
+            }
+        });
+    	
+		rezervacijePanel.add(buttonPanel, BorderLayout.PAGE_END);
+		JScrollPane scrollPane = new JScrollPane(rezervacijeTable);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		rezervacijePanel.add(scrollPane);
 	    
 	    JLabel ukupanTrosakLabel = new JLabel("Ukupan trosak: "+GostManager.getInstance().ukupanTrosak(korisnickoIme));
 	    
 	    rezervacijePanel.add(ukupanTrosakLabel, BorderLayout.PAGE_START);
-	    rezervacijePanel.add(scrollPane, BorderLayout.CENTER);
 
 	    return rezervacijePanel;
 	}

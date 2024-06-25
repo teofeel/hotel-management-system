@@ -1,6 +1,6 @@
 package views;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -11,7 +11,7 @@ import manager.*;
 import enumi.*;
 
 import javax.swing.*;
-
+import java.time.format.DateTimeFormatter;
 import com.toedter.calendar.JDateChooser;
 
 import controller.*;
@@ -54,16 +54,16 @@ public class RecepcionerViews extends JFrame{
 		checkInRezervacijaButton = new JButton("Check IN sa rezervacijom");
 		checkInRezervacijaButton.addActionListener(new NavbarButtonListener("CheckINRezervacijaPanel"));
 		
-		checkOutButton = new JButton("Check OUT");
-		checkOutButton.addActionListener(new NavbarButtonListener("CheckOutPanel"));
+		/*checkOutButton = new JButton("Check OUT");
+		checkOutButton.addActionListener(new NavbarButtonListener("CheckOutPanel"));*/
 		
-		izmenaStatusaRezButton = new JButton("Izmena statua rezervacije");
-		izmenaStatusaRezButton.addActionListener(new NavbarButtonListener("IzmenaStatusaRezervacijePanel"));
+		/*izmenaStatusaRezButton = new JButton("Izmena statua rezervacije");
+		izmenaStatusaRezButton.addActionListener(new NavbarButtonListener("IzmenaStatusaRezervacijePanel"));*/
 		
 		sobeButton = new JButton("Sobe");
 		sobeButton.addActionListener(new NavbarButtonListener("SobePanel"));
 
-		sveRezervacijeButton = new JButton("Sve Rezervacije");
+		sveRezervacijeButton = new JButton("Rezervacije");
 		sveRezervacijeButton.addActionListener(new NavbarButtonListener("SveRezPanel"));
 		
 		logout = new JButton("Logout");
@@ -78,8 +78,8 @@ public class RecepcionerViews extends JFrame{
 		
 		navbar.add(checkInButton);
 		navbar.add(checkInRezervacijaButton);
-		navbar.add(checkOutButton);
-		navbar.add(izmenaStatusaRezButton);
+		//navbar.add(checkOutButton);
+		//navbar.add(izmenaStatusaRezButton);
 		navbar.add(sobeButton);
 		navbar.add(sveRezervacijeButton);
 		navbar.add(logout);
@@ -100,7 +100,7 @@ public class RecepcionerViews extends JFrame{
 	}
 	
 	private JPanel sveRezPanel() {
-		JPanel sveRezPanel = new JPanel();
+		JPanel sveRezPanel = new JPanel(new BorderLayout());
 		
 		RezervacijaTableModel model = new RezervacijaTableModel();
 		JTable rezervacijeTable = new JTable(model);
@@ -108,12 +108,12 @@ public class RecepcionerViews extends JFrame{
 		TableRowSorter<RezervacijaTableModel> sorter = new TableRowSorter<>(model);
 		rezervacijeTable.setRowSorter(sorter);
 
-
-	    JScrollPane scrollPane = new JScrollPane(rezervacijeTable);
-	    sveRezPanel.add(scrollPane, BorderLayout.CENTER);
+	    //sveRezPanel.add(filterPanel(sorter), BorderLayout.PAGE_END);
 	    
-	    sveRezPanel.add(filterPanel(sorter), BorderLayout.NORTH);
-		sveRezPanel.add(rezervacijeTable);
+	    /*JScrollPane scrollPaneTable = new JScrollPane(rezervacijeTable);
+	    scrollPaneTable.add(rezervacijeTable);
+	    
+		sveRezPanel.add(rezervacijeTable);*/
 		
 		JButton potvrdiButton = new JButton("Potvrdi");
 		potvrdiButton.addActionListener(new ActionListener() {
@@ -208,16 +208,34 @@ public class RecepcionerViews extends JFrame{
                 uslugePanel.repaint();
             }
         });
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(potvrdiButton);
+		buttonPanel.add(odbijButton);
+		buttonPanel.add(dodajUsluguButton);
 		
-		sveRezPanel.add(potvrdiButton);
-		sveRezPanel.add(odbijButton);
-		sveRezPanel.add(dodajUsluguButton);
+		sveRezPanel.add(buttonPanel, BorderLayout.PAGE_START);
+		
+		JScrollPane scrollPane = new JScrollPane(rezervacijeTable);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        sveRezPanel.add(scrollPane);
+        
+        
+        JScrollPane scrollPane1 = new JScrollPane(filterPanel(sorter));
+        scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        sveRezPanel.add(filterPanel(sorter), BorderLayout.PAGE_END);
+		/*sveRezPanel.add(buttonPanel, BorderLayout.PAGE_END);
+		
+		JScrollPane scrollPane = new JScrollPane(rezervacijeTable);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	    sveRezPanel.add(scrollPane, BorderLayout.CENTER);*/
+		
 		
 		return sveRezPanel;
 	}
 	
 	private JPanel filterPanel(TableRowSorter<RezervacijaTableModel> sorter) {
-		JPanel filterPanel = new JPanel(new FlowLayout());
+		JPanel filterPanel = new JPanel(new GridBagLayout());
 
 	    JTextField tipSobeFilterField = new JTextField(10);
 	    JTextField sobaFilterField = new JTextField(10);
@@ -271,18 +289,12 @@ public class RecepcionerViews extends JFrame{
                     filters.add(RowFilter.regexFilter("(?i)" + statusRez, 6));
                 }
                 
-                String[] dodatneUsluge = dodatneUslugeField.getText().split(" ");
-                if (dodatneUsluge.length > 0) {
-                	//String regexPattern = "\\b(?:";
+                if (dodatneUslugeField.getText().length() > 0) {
+                	 String[] dodatneUsluge = dodatneUslugeField.getText().split(" ");
                 	String regexPattern="";
                 	for (String r:dodatneUsluge) {
                 		regexPattern += "(?=.*\\"+r+"\\b)";
-                		//regexPattern+= r+"|";
-                		
                 	}
-                	//regexPattern = regexPattern.substring(0, regexPattern.length()-1)+")\\b"; // \\s*\\(\"\\s*word\\s*\"\\)";
-
-                	System.out.println(regexPattern);
                     filters.add(RowFilter.regexFilter(regexPattern, 7));
                 }
 
@@ -326,31 +338,91 @@ public class RecepcionerViews extends JFrame{
 			}
 	    });
 	    
+	    GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        filterPanel.add(new JLabel("Filter by Tip Sobe:"), gbc);
+        gbc.gridx = 1;
+        filterPanel.add(tipSobeFilterField, gbc);
+
+        gbc.gridx = 2;
+        filterPanel.add(new JLabel("Filter by Soba ID:"), gbc);
+        gbc.gridx = 3;
+        filterPanel.add(sobaFilterField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        filterPanel.add(new JLabel("Najmanja cena:"), gbc);
+        gbc.gridx = 1;
+        filterPanel.add(cenaPocetnaField, gbc);
+
+        gbc.gridx = 2;
+        filterPanel.add(new JLabel("Najveca cena:"), gbc);
+        gbc.gridx = 3;
+        filterPanel.add(cenaKrajnjaField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        filterPanel.add(new JLabel("Dodatne usluge:"), gbc);
+        gbc.gridx = 1;
+        filterPanel.add(dodatneUslugeField, gbc);
+
+        gbc.gridx = 2;
+        filterPanel.add(new JLabel("Status Rezervacije:"), gbc);
+        
+        gbc.gridx = 3;
+	    filterPanel.add(statusRezBox, gbc);
 	    
-	    filterPanel.add(new JLabel("Filter by Tip Sobe:"));
-	    filterPanel.add(tipSobeFilterField);
-	    filterPanel.add(new JLabel("Filter by Soba ID:"));
-	    filterPanel.add(sobaFilterField);
-	    filterPanel.add(new JLabel("Najmanja cena:"));
-	    filterPanel.add(cenaPocetnaField);
-	    filterPanel.add(new JLabel("Najveca cena:"));
-	    filterPanel.add(cenaKrajnjaField);
-	    filterPanel.add(new JLabel("Dodatne usluge:"));
-	    filterPanel.add(dodatneUslugeField);
-	    filterPanel.add(statusRezBox);
-	    filterPanel.add(filterButton);
-	    filterPanel.add(removeSortButton);
-	    filterPanel.add(sortNajmanjeCena);
-	    filterPanel.add(sortNajvecaButton);
+	    gbc.gridx = 0;
+        gbc.gridy = 3;
+	    filterPanel.add(filterButton, gbc);
+	    gbc.gridx = 1;
+	    filterPanel.add(removeSortButton, gbc);
+	    
+	    gbc.gridx = 2;
+	    filterPanel.add(sortNajmanjeCena, gbc);
+	    gbc.gridy = 3;
+	    filterPanel.add(sortNajvecaButton, gbc);
 	    
 	    return filterPanel;
 	}
 	
 	
 	private JPanel sobePanel() {
-		HashMap<Integer, Soba> sobe = SobaManager.sobe;
+		JPanel sobePanel = new JPanel(new BorderLayout());
+		
+		SobaTableModel model = new SobaTableModel();
+		JTable sobeTable = new JTable(model);
+		
+		JScrollPane scrollPanel = new JScrollPane(sobeTable);
+		sobePanel.add(scrollPanel, BorderLayout.CENTER);
+		JButton checkOut = new JButton("Check Out");
+		checkOut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Soba s = model.getSobe(sobeTable.getSelectedRow());
+					
+					String poruka = RecepcionerManager.getInstance().checkOUTProces(s);
+					JOptionPane.showMessageDialog(sobePanel, poruka);
+					sobeTable.updateUI();
+				}catch(Exception err) {
+					JOptionPane.showMessageDialog(sobePanel, "Nije selektovan ni jedan red tabele");
+				}
+				
+			}
+		});
+		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(checkOut);
+		sobePanel.add(buttonPanel, BorderLayout.PAGE_START);
+		/*HashMap<Integer, Soba> sobe = SobaManager.sobe;
 
-		JPanel sobePanel = new JPanel();
+		
 		
 		JPanel sobeListaPanel = new JPanel(new GridLayout(sobe.size(),2));
 		
@@ -404,7 +476,7 @@ public class RecepcionerViews extends JFrame{
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         sobePanel.add(scrollPane, BorderLayout.CENTER);
         
-        sobePanel.setMaximumSize(getMaximumSize());	
+        sobePanel.setMaximumSize(getMaximumSize());	*/
         
 		return sobePanel;
 	}
@@ -512,86 +584,114 @@ public class RecepcionerViews extends JFrame{
 	private JPanel checkInRezervacijaPanel() {
 		JPanel checkInPanel = new JPanel(new BorderLayout());
 	    checkInPanel.add(new JLabel("Check IN rezervacija"), BorderLayout.NORTH);
+	    
+	    RezervacijaTableModel model = new RezervacijaTableModel();
+		JTable rezervacijeTable = new JTable(model);
+		
+		TableRowSorter<RezervacijaTableModel> sorter = new TableRowSorter<>(model);
+		rezervacijeTable.setRowSorter(sorter);
+		
+		sorter.setRowFilter(RowFilter.regexFilter("POTVRDJENA", 6));
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	    ArrayList<Rezervacija> rezervacije = RezervacijaManager.getInstance().potvrdjeneRezervacije();
-	    JPanel rezervacijeListPanel = new JPanel(new GridBagLayout());
-	    GridBagConstraints gbc = new GridBagConstraints();
-	    gbc.insets = new Insets(10, 5, 5, 5);
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
+		// Custom RowFilter to filter dates after the current day
+		RowFilter<RezervacijaTableModel, Object> customFilter = new RowFilter<RezervacijaTableModel, Object>() {
+		    @Override
+		    public boolean include(Entry<? extends RezervacijaTableModel, ? extends Object> entry) {
+		        // Get the date from the table in the specified column (e.g., column 3)
+		       // String dateString = (String) entry.getValue(3);
+		        LocalDate date = (LocalDate) entry.getValue(3);
+		        StatusRezervacije sr = (StatusRezervacije) entry.getValue(6);
+		        //Soba s = (Soba) entry.getValue(2);
+		        // Compare the date with the current date
+		        return date.isAfter(LocalDate.now().minusDays(1)) && sr.equals(StatusRezervacije.POTVRDJENA) && entry.getValue(2)=="";
+		    }
+		};
+		
+		sorter.setRowFilter(customFilter);
+		
+		checkInPanel.add(rezervacijeTable);
+		
+		JButton zapocniCheckInButton = new JButton("Check In");
+        JButton dodajUsluguButton = new JButton("Dodaj uslugu");
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(zapocniCheckInButton);
+        buttonPanel.add(dodajUsluguButton);
+        checkInPanel.add(buttonPanel, BorderLayout.PAGE_START);
+        
+        dodajUsluguButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	try {
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		
+            		JFrame uslugeFrame = new JFrame("Usluge");
+                    uslugeFrame.setSize(300, 300);
+                    uslugeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-	    int row = 0;
-	    for (Rezervacija rez : rezervacije) {
-	        JPanel rezervacijaPanel = new JPanel(new GridLayout(1, 7));
-	        gbc.gridy = row++;
+                    JPanel uslugePanel = new JPanel(new GridLayout(0, 2));
+                    updateUslugePanel(uslugePanel, uslugeFrame, rez);
 
-	        JLabel emailGosta = new JLabel(rez.getGost());
-	        JLabel datumDolaska = new JLabel(rez.getDatumDolaska().toString());
-	        JLabel datumOdlaska = new JLabel(rez.getDatumOdlaska().toString());
-	        JLabel brojLjudi = new JLabel(Integer.toString(rez.getBrOsoba()));
-	        JLabel tipSobe = new JLabel(rez.getTipSobe().getNaziv());
+                    uslugeFrame.add(new JScrollPane(uslugePanel));
+                    uslugeFrame.setVisible(true);
+                    
+                    uslugeFrame.addWindowListener(new WindowAdapter() {
+            			@Override
+            	        public void windowClosed(WindowEvent e) {
+            				rezervacijeTable.updateUI();
+            	        }
+            		});
+            	}catch(Exception e1) {
+            		JOptionPane.showMessageDialog(buttonPanel, "Nijedan red tabele nije selektovan");
+            	}
+                
+            }
 
-	        JButton zapocniCheckInButton = new JButton("Check In");
-	        JButton dodajUsluguButton = new JButton("Dodaj uslugu");
+            private void updateUslugePanel(JPanel uslugePanel, JFrame uslugeFrame, Rezervacija rez) {
+                uslugePanel.removeAll();
+                CenovnikManager.cenovnici.get(0).getDodatneUsluge().forEach((key, du) -> {
+                    uslugePanel.add(new JLabel(du.getNaziv()));
+                    JButton actionButton = new JButton(rez.getUsluge().contains(du) ? "Izbaci" : "Dodaj");
+                    actionButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (rez.getUsluge().contains(du)) {
+                                rez.izbaciUslugu(du.getNaziv());
+                            } else {
+                                rez.dodajUslugu(du);
+                            }
+                            updateUslugePanel(uslugePanel, uslugeFrame, rez);
+                        }
+                    });
+                    uslugePanel.add(actionButton);
+                });
+                uslugePanel.revalidate();
+                uslugePanel.repaint();
+            }
+        });
 
-	        rezervacijaPanel.add(emailGosta);
-	        rezervacijaPanel.add(datumDolaska);
-	        rezervacijaPanel.add(datumOdlaska);
-	        rezervacijaPanel.add(brojLjudi);
-	        rezervacijaPanel.add(tipSobe);
-	        rezervacijaPanel.add(dodajUsluguButton);
-	        rezervacijaPanel.add(zapocniCheckInButton);
-
-	        dodajUsluguButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                JFrame uslugeFrame = new JFrame("Usluge");
-	                uslugeFrame.setSize(300, 300);
-	                uslugeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-	                JPanel uslugePanel = new JPanel(new GridLayout(0, 2));
-	                updateUslugePanel(uslugePanel, uslugeFrame, rez);
-
-	                uslugeFrame.add(new JScrollPane(uslugePanel));
-	                uslugeFrame.setVisible(true);
-	            }
-
-	            private void updateUslugePanel(JPanel uslugePanel, JFrame uslugeFrame, Rezervacija rez) {
-	                uslugePanel.removeAll();
-	                CenovnikManager.cenovnici.get(0).getDodatneUsluge().forEach((key, du) -> {
-	                    uslugePanel.add(new JLabel(du.getNaziv()));
-	                    JButton actionButton = new JButton(rez.getUsluge().contains(du) ? "Izbaci" : "Dodaj");
-	                    actionButton.addActionListener(new ActionListener() {
-	                        @Override
-	                        public void actionPerformed(ActionEvent e) {
-	                            if (rez.getUsluge().contains(du)) {
-	                                rez.izbaciUslugu(du.getNaziv());
-	                            } else {
-	                                rez.dodajUslugu(du);
-	                            }
-	                            updateUslugePanel(uslugePanel, uslugeFrame, rez);
-	                        }
-	                    });
-	                    uslugePanel.add(actionButton);
-	                });
-	                uslugePanel.revalidate();
-	                uslugePanel.repaint();
-	            }
-	        });
-
-	        zapocniCheckInButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                JFrame checkInFrame = checkInFrame(rez);
-	                checkInFrame.setVisible(true);
-	               
-	            }
-	        });
-
-	        rezervacijeListPanel.add(rezervacijaPanel, gbc);
-	    }
-
-	    JScrollPane scrollPane = new JScrollPane(rezervacijeListPanel);
-	    checkInPanel.add(scrollPane, BorderLayout.CENTER);
+        zapocniCheckInButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	try {
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		JFrame checkInFrame = checkInFrame(rez);
+            		checkInFrame.setVisible(true);
+            		
+            		checkInFrame.addWindowListener(new WindowAdapter() {
+            			@Override
+            	        public void windowClosed(WindowEvent e) {
+            				sorter.setRowFilter(customFilter);
+            	        }
+            		});
+            	}catch(Exception err) {
+            		JOptionPane.showMessageDialog(buttonPanel, "Nijedan red tabele nije selektovan");
+            	}
+                
+               
+            }
+        });
 
 	    return checkInPanel;
 	}
