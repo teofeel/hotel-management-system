@@ -5,7 +5,7 @@ import java.util.*;
 
 import entity.*;
 import enumi.StatusRezervacije;
-
+import java.time.temporal.ChronoUnit;
 public class IzvestajiManager {
 	private static IzvestajiManager instance = new IzvestajiManager();
 	
@@ -148,19 +148,74 @@ public class IzvestajiManager {
 		}
 	}
 	
-	public void sobaStatistic(String p, String k) {
+	public HashMap<Integer, Integer> sobaNocenja(String p, String k) {
 		try {
 			if(p.equals("") || k.equals("")) throw new Exception();
 			LocalDate pocetak = LocalDate.parse(p);
 			LocalDate kraj = LocalDate.parse(k);
 			
+			HashMap<Integer, Integer> sobeNocenja = new HashMap<Integer, Integer>();
 			
+			for(Rezervacija rez:RezervacijaManager.rezervacije) {
+				if(rez.getSoba()==null) continue;
+				
+				if(rez.getDatumDolaska().isAfter(pocetak.minusDays(1)) && rez.getDatumDolaska().isBefore(kraj.plusDays(1)) && 
+						rez.getDatumOdlaska().isAfter(pocetak.minusDays(1)) &&rez.getDatumOdlaska().isBefore(kraj.plusDays(1))) {
+					int broj = sobeNocenja.containsKey(rez.getSoba().getSifra()) ? sobeNocenja.get(rez.getSoba().getSifra()):0;
+					
+					int i=0;
+					while (rez.getDatumDolaska().plusDays(i).isBefore(rez.getDatumOdlaska())) {
+						i+=1;
+					}
+					
+					broj+=1;
+					sobeNocenja.put(rez.getSoba().getSifra(), broj);
+				}	
+			}
+			
+			return sobeNocenja;
 		}catch(Exception e) {
+			HashMap<Integer, Integer> sobeNocenja = new HashMap<Integer, Integer>();
+			for(Soba s:SobaManager.sobe.values()) {
+				sobeNocenja.put(s.getSifra(), 0);
+			}
 			
+			return sobeNocenja;
 		}
 	}
 
-	
+	public HashMap<Integer, Float> sobaPrihodi(String p, String k) {
+		try {
+			if(p.equals("") || k.equals("")) throw new Exception();
+			LocalDate pocetak = LocalDate.parse(p);
+			LocalDate kraj = LocalDate.parse(k);
+			
+			HashMap<Integer, Float> sobePrihodi = new HashMap<Integer, Float>();
+			for(Rezervacija rez:RezervacijaManager.rezervacije) {
+				if(rez.getSoba()==null) continue;
+				
+				if(rez.getDatumDolaska().isAfter(pocetak.minusDays(1)) && rez.getDatumDolaska().isBefore(kraj.plusDays(1)) && 
+						rez.getDatumOdlaska().isAfter(pocetak.minusDays(1)) &&rez.getDatumOdlaska().isBefore(kraj.plusDays(1))) {
+					
+					float prihod = sobePrihodi.containsKey(rez.getSoba().getSifra()) ? sobePrihodi.get(rez.getSoba().getSifra()):(float) 0;
+					
+					prihod+=rez.getCena();
+					
+					sobePrihodi.put(rez.getSoba().getSifra(), prihod);
+				}	
+			}
+			
+			return sobePrihodi;
+			
+		}catch(Exception e) {
+			HashMap<Integer, Float> sobePrihodi= new HashMap<Integer, Float>();
+			for(Soba s:SobaManager.sobe.values()) {
+				sobePrihodi.put(s.getSifra(), (float) 0);
+			}
+			
+			return sobePrihodi;
+		}
+	}
 	public ArrayList<Float> prihodiZadnjaGodina(String tipSobe) {
 		ArrayList<Float> prihodi = new ArrayList<Float>();
 		

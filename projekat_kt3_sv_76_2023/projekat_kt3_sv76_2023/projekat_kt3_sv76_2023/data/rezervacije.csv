@@ -1,6 +1,6 @@
 Email,Status,Tip Sobe,Soba,Datum Dolaska,Datum Odlaska,Broj Osoba,Dodatne Usluge,Cena,Datum Kreiranja
 milica@example.com,NA_CEKANJU,Jednokrevetna (1),,2024-08-13,2024-08-23,1,Dorucak|Vecera|,700.0,2024-06-25
-ana@example.com,ODBIJENA,Dvokrevetna (1+1),,2024-06-06,2024-06-12,1,Dorucak|Vecera|,600.0,2024-06-25
+ana@example.com,NA_CEKANJU,Dvokrevetna (1+1),,2024-06-06,2024-06-12,1,Dorucak|Vecera|,600.0,2024-06-25
 milica@example.com,POTVRDJENA,Trokrevetna (2+1),112,2024-05-27,2024-06-03,1,Dorucak|Vecera|,840.0,2024-06-25
 ana@example.com,ODBIJENA,Trokrevetna (2+1),,2024-05-29,2024-06-05,1,,700.0,2024-06-25
 ana@example.com,OTKAZANA,Trokrevetna (2+1),,2024-06-10,2024-06-15,1,,500.0,2024-06-25
