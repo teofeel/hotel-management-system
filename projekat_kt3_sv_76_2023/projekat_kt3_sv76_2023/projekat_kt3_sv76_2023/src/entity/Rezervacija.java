@@ -16,8 +16,9 @@ public class Rezervacija {
 	private int brOsoba;
 	private float cena;
 	private boolean checkedIn;
+	private LocalDate datumKreiranja;
 	
-	public Rezervacija(String emailKorisnika, TipSobe tipSobe, Soba soba, int brOsoba,LocalDate datumDolaska, LocalDate datumOdlaska, ArrayList<DodatneUsluge> usluga) {
+	public Rezervacija(String emailKorisnika, TipSobe tipSobe, Soba soba, int brOsoba,LocalDate datumDolaska, LocalDate datumOdlaska, ArrayList<DodatneUsluge> usluga, LocalDate dan) {
 		
 		this.emailKorisnika = emailKorisnika;
 		this.status = StatusRezervacije.valueOf("NA_CEKANJU");
@@ -34,9 +35,11 @@ public class Rezervacija {
 		}
 		this.cena = this.izracunajCenu();
 		this.checkedIn = false;
+		
+		this.datumKreiranja = dan;
 	}
 	
-	public Rezervacija(String emailKorisnika, StatusRezervacije status, TipSobe tipSobe, Soba soba, int brOsoba,LocalDate datumDolaska, LocalDate datumOdlaska, ArrayList<DodatneUsluge> usluga) {
+	public Rezervacija(String emailKorisnika, StatusRezervacije status, TipSobe tipSobe, Soba soba, int brOsoba,LocalDate datumDolaska, LocalDate datumOdlaska, ArrayList<DodatneUsluge> usluga, LocalDate dan) {
 		this.emailKorisnika = emailKorisnika;
 		this.status = status;
 		this.tipSobe = tipSobe;
@@ -52,9 +55,10 @@ public class Rezervacija {
 		}
 		this.cena = this.izracunajCenu();
 		this.checkedIn = false;
+		this.datumKreiranja = dan;
 	}
 	
-	public Rezervacija(String emailKorisnika, StatusRezervacije status, TipSobe tipSobe, Soba soba, int brOsoba,LocalDate datumDolaska, LocalDate datumOdlaska, ArrayList<DodatneUsluge> usluga, float cena) {
+	public Rezervacija(String emailKorisnika, StatusRezervacije status, TipSobe tipSobe, Soba soba, int brOsoba,LocalDate datumDolaska, LocalDate datumOdlaska, ArrayList<DodatneUsluge> usluga, float cena, LocalDate dan) {
 		this.emailKorisnika = emailKorisnika;
 		this.status = status;
 		this.tipSobe = tipSobe;
@@ -70,6 +74,8 @@ public class Rezervacija {
 		}
 		this.cena = cena;
 		this.checkedIn = false;
+		
+		this.datumKreiranja = dan;
 	}
 	
 	public boolean getCheckedIn() {
@@ -102,6 +108,9 @@ public class Rezervacija {
 	public float getCena() {
 		return this.cena;
 	}
+	public LocalDate getDatumKreiranja() {
+		return this.datumKreiranja;
+	}
 	
 	public void setGost(String e) {
 		this.emailKorisnika = e;
@@ -127,6 +136,10 @@ public class Rezervacija {
 	public void setCheckedIn(boolean check) {
 		this.checkedIn = check;
 	}
+	public void setDatumKreiranja(LocalDate d) {
+		this.datumKreiranja=d;
+	}
+	
 	public void dodajUslugu(DodatneUsluge d) {
 		if(this.soba != null || this.status.equals(StatusRezervacije.OTKAZANA) || this.status.equals(StatusRezervacije.ODBIJENA)) return;
 				

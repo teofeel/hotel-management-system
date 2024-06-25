@@ -108,7 +108,7 @@ public class FileManager {
 		try {
 			FileWriter writer = this.getFileWriter("rezervacije.csv");
 			
-			writer.write("Email,Status,Tip Sobe,Soba,Datum Dolaska,Datum Odlaska,Broj Osoba,Dodatne Usluge,Cena"+"\n");
+			writer.write("Email,Status,Tip Sobe,Soba,Datum Dolaska,Datum Odlaska,Broj Osoba,Dodatne Usluge,Cena,Datum Kreiranja"+"\n");
 			for(Rezervacija rez : RezervacijaManager.rezervacije) {
 				String dodatneUsluge = "";
 				for(DodatneUsluge du:rez.getUsluge()) {
@@ -123,7 +123,7 @@ public class FileManager {
 				
 				String str = (rez.getGost()+","+statusRez+","+rez.getTipSobe().getNaziv()+","+
 						sifraSobe+","+rez.getDatumDolaska().toString()+","+rez.getDatumOdlaska().toString()+","
-						+Integer.toString(rez.getBrOsoba())+","+dodatneUsluge+","+Double.toString(rez.izracunajCenu()))+"\n";
+						+Integer.toString(rez.getBrOsoba())+","+dodatneUsluge+","+Double.toString(rez.izracunajCenu()))+","+rez.getDatumKreiranja().toString()+"\n";
 				
 				writer.write(str);
 			}
@@ -366,8 +366,9 @@ public class FileManager {
 				
 				int brOsoba = Integer.parseInt(line.split(",")[6]);
 				float cena = Float.parseFloat(line.split(",")[8]);
+				LocalDate dan = LocalDate.parse(line.split(",")[9]);
 				
-				Rezervacija rez = new Rezervacija(korisnickoIme,statusRez,ts,s, brOsoba, datumDolaska, datumOdlaska, du, cena);
+				Rezervacija rez = new Rezervacija(korisnickoIme,statusRez,ts,s, brOsoba, datumDolaska, datumOdlaska, du, cena, dan);
 				
 				RezervacijaManager.rezervacije.add(rez);
 			}

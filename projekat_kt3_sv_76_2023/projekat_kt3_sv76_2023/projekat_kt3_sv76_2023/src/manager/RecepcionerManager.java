@@ -127,7 +127,7 @@ public class RecepcionerManager {
 			
 			if(datumOD.isAfter(datumDO)) throw new Exception();
 			
-			RezervacijaManager.rezervacije.add(new Rezervacija(gost, tipSobe, null,  brOsoba, datumOD, datumDO, usluga));
+			RezervacijaManager.rezervacije.add(new Rezervacija(gost, tipSobe, null,  brOsoba, datumOD, datumDO, usluga, LocalDate.now()));
 			
 			return "Zahtev je poslat";
 		}catch(Exception e) {

@@ -84,7 +84,7 @@ public class FileTest {
 
         ArrayList<DodatneUsluge> usluge = new ArrayList<>();
         usluge.add(dodatnaUsluga);
-        Rezervacija rezervacija = new Rezervacija(gost.getKorisnickoIme(), StatusRezervacije.NA_CEKANJU, tipSobe, soba, 2, LocalDate.now(), LocalDate.now().plusDays(3), usluge);
+        Rezervacija rezervacija = new Rezervacija(gost.getKorisnickoIme(), StatusRezervacije.NA_CEKANJU, tipSobe, soba, 2, LocalDate.now(), LocalDate.now().plusDays(3), usluge, LocalDate.now());
         RezervacijaManager.rezervacije.add(rezervacija);
         
         fileManager.upisiPodatke();
