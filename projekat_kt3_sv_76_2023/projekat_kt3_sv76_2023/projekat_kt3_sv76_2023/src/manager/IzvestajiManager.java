@@ -44,26 +44,45 @@ public class IzvestajiManager {
 		}
 	}
 	
-	public void sredjeneSobe(Sobarica sob, String p, String k) {
+	public int sredjeneSobe(Sobarica sob, String p, String k) {
 		try {
 			if(p.equals("") || k.equals("")) throw new Exception();
 			
 			LocalDate pocetak = LocalDate.parse(p);
 			LocalDate kraj = LocalDate.parse(k);
 			
-			
+			int br=0;
+			for(LocalDate dan:sob.getSredjeneSobe()) {
+				if(dan.isAfter(pocetak.minusDays(1)) && dan.isBefore(kraj.plusDays(1))) {
+					br+=1;
+				}
+			}
+			return br;
 
 		}catch(Exception e) {
-			
+			return 0;
 		}
 	}
 	
-	public void potvrdjeneRezervacije(String p, String k) {
+	public int potvrdjeneRezervacije(String p, String k) {
 		try {
+			if(p.equals("") || k.equals("")) throw new Exception();
 			
+			LocalDate pocetak = LocalDate.parse(p);
+			LocalDate kraj = LocalDate.parse(k);
+			
+			int potvrdjene = 0;
+			for(Rezervacija rez:RezervacijaManager.rezervacije) {
+				if(rez.getStatus().equals(StatusRezervacije.POTVRDJENA) && 
+						rez.getDatumDolaska().isAfter(pocetak.minusDays(1)) && rez.getDatumDolaska().isBefore(kraj.plusDays(1))) {
+					potvrdjene+=1;
+				}
+			}
+			return potvrdjene;
 		}catch(Exception e) {
-			
+			return 0;
 		}
 	}
+	
 	
 }
