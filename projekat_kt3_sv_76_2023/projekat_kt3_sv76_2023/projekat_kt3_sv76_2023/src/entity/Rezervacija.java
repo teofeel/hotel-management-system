@@ -128,6 +128,8 @@ public class Rezervacija {
 		this.checkedIn = check;
 	}
 	public void dodajUslugu(DodatneUsluge d) {
+		if(this.soba != null || this.status.equals(StatusRezervacije.OTKAZANA) || this.status.equals(StatusRezervacije.ODBIJENA)) return;
+				
 		for(int i=0;i<this.usluge.size();i++) {
 			if(this.usluge.get(i).getNaziv().equals(d.getNaziv())) {
 				return;
@@ -138,6 +140,8 @@ public class Rezervacija {
 	}
 	
 	public void izbaciUslugu(String naziv) {
+		if(this.soba != null || this.status.equals(StatusRezervacije.OTKAZANA) || this.status.equals(StatusRezervacije.ODBIJENA)) return;
+		
 		for(int i=0;i<this.usluge.size();i++) {
 			if(this.usluge.get(i).getNaziv().equals(naziv)) {
 				this.usluge.remove(i);

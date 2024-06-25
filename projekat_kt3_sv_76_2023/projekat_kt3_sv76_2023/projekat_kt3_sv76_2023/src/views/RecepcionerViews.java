@@ -18,7 +18,9 @@ import controller.*;
 
 import java.awt.*;
 import java.awt.event.*;
-
+import javax.swing.table.TableRowSorter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class RecepcionerViews extends JFrame{
 	private JPanel contentPanel;
@@ -29,6 +31,7 @@ public class RecepcionerViews extends JFrame{
 	private JButton checkInRezervacijaButton;
 	private JButton izmenaStatusaRezButton;
 	private JButton sobeButton;
+	private JButton sveRezervacijeButton;
 	private JButton logout;
 	private RecepcionerController recepcionerController;
 	
@@ -60,6 +63,8 @@ public class RecepcionerViews extends JFrame{
 		sobeButton = new JButton("Sobe");
 		sobeButton.addActionListener(new NavbarButtonListener("SobePanel"));
 
+		sveRezervacijeButton = new JButton("Sve Rezervacije");
+		sveRezervacijeButton.addActionListener(new NavbarButtonListener("SveRezPanel"));
 		
 		logout = new JButton("Logout");
 		logout.addActionListener(new ActionListener(){
@@ -76,6 +81,7 @@ public class RecepcionerViews extends JFrame{
 		navbar.add(checkOutButton);
 		navbar.add(izmenaStatusaRezButton);
 		navbar.add(sobeButton);
+		navbar.add(sveRezervacijeButton);
 		navbar.add(logout);
 		
 		cardLayout = new CardLayout(); 
@@ -86,11 +92,258 @@ public class RecepcionerViews extends JFrame{
 		contentPanel.add(this.izmenaStatusaPanel(), "IzmenaStatusaRezervacijePanel");
 		contentPanel.add(this.checkOutPanel(), "CheckOutPanel");
 		contentPanel.add(this.sobePanel(), "SobePanel");
+		contentPanel.add(this.sveRezPanel(), "SveRezPanel");
 		
 		add(navbar,BorderLayout.NORTH);
 		add(contentPanel, BorderLayout.CENTER);
 
 	}
+	
+	private JPanel sveRezPanel() {
+		JPanel sveRezPanel = new JPanel();
+		
+		RezervacijaTableModel model = new RezervacijaTableModel();
+		JTable rezervacijeTable = new JTable(model);
+		
+		TableRowSorter<RezervacijaTableModel> sorter = new TableRowSorter<>(model);
+		rezervacijeTable.setRowSorter(sorter);
+
+
+	    JScrollPane scrollPane = new JScrollPane(rezervacijeTable);
+	    sveRezPanel.add(scrollPane, BorderLayout.CENTER);
+	    
+	    sveRezPanel.add(filterPanel(sorter), BorderLayout.NORTH);
+		sveRezPanel.add(rezervacijeTable);
+		
+		JButton potvrdiButton = new JButton("Potvrdi");
+		potvrdiButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int row = rezervacijeTable.getSelectedRow();
+					
+					String gostEmail = RezervacijaManager.rezervacije.get(row).getGost();
+					String datumDolaska = RezervacijaManager.rezervacije.get(row).getDatumDolaska().toString();
+					String datumOdlaska = RezervacijaManager.rezervacije.get(row).getDatumOdlaska().toString();
+					String poruka = RecepcionerManager.getInstance().izmenaStatusaRezrvacije(gostEmail, datumDolaska, datumOdlaska, StatusRezervacije.POTVRDJENA);
+					
+					JOptionPane.showMessageDialog(sveRezPanel, poruka);
+					rezervacijeTable.updateUI();
+				}catch(Exception err) {
+					JOptionPane.showMessageDialog(sveRezPanel, "Nijedan red tabele nije selektovan");
+				}
+				
+			}
+		});
+		
+		JButton odbijButton = new JButton("Odbij");
+		odbijButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int row = rezervacijeTable.getSelectedRow();
+					
+					String gostEmail = RezervacijaManager.rezervacije.get(row).getGost();
+					String datumDolaska = RezervacijaManager.rezervacije.get(row).getDatumDolaska().toString();
+					String datumOdlaska = RezervacijaManager.rezervacije.get(row).getDatumOdlaska().toString();
+					String poruka = RecepcionerManager.getInstance().izmenaStatusaRezrvacije(gostEmail, datumDolaska, datumOdlaska, StatusRezervacije.ODBIJENA);
+					
+					JOptionPane.showMessageDialog(sveRezPanel, poruka);
+					rezervacijeTable.updateUI();
+				}catch(Exception err) {
+					JOptionPane.showMessageDialog(sveRezPanel, "Nijedan red tabele nije selektovan");
+				}
+				
+			}
+		});
+		
+		JButton dodajUsluguButton = new JButton("Dodaj uslugu");
+		dodajUsluguButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	try {
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		JFrame uslugeFrame = new JFrame("Usluge");
+            		uslugeFrame.addWindowListener(new WindowAdapter() {
+            			@Override
+            	        public void windowClosed(WindowEvent e) {
+            				rezervacijeTable.updateUI();
+            	        }
+            			
+            		});
+            		uslugeFrame.setSize(300, 300);
+            		uslugeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            		JPanel uslugePanel = new JPanel(new GridLayout(0, 2));
+            		updateUslugePanel(uslugePanel, uslugeFrame, rez);
+
+            		uslugeFrame.add(new JScrollPane(uslugePanel));
+            		uslugeFrame.setVisible(true);
+            		
+            	}catch(Exception e1) {
+            		JOptionPane.showMessageDialog(sveRezPanel, "Nijedan red tabele nije selektovan");
+            	}
+                
+            }
+
+            private void updateUslugePanel(JPanel uslugePanel, JFrame uslugeFrame, Rezervacija rez) {
+                uslugePanel.removeAll();
+                CenovnikManager.cenovnici.get(0).getDodatneUsluge().forEach((key, du) -> {
+                    uslugePanel.add(new JLabel(du.getNaziv()));
+                    JButton actionButton = new JButton(rez.getUsluge().contains(du) ? "Izbaci" : "Dodaj");
+                    actionButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (rez.getUsluge().contains(du)) {
+                                rez.izbaciUslugu(du.getNaziv());
+                            } else {
+                                rez.dodajUslugu(du);
+                            }
+                            updateUslugePanel(uslugePanel, uslugeFrame, rez);
+                        }
+                    });
+                    uslugePanel.add(actionButton);
+                });
+                uslugePanel.revalidate();
+                uslugePanel.repaint();
+            }
+        });
+		
+		sveRezPanel.add(potvrdiButton);
+		sveRezPanel.add(odbijButton);
+		sveRezPanel.add(dodajUsluguButton);
+		
+		return sveRezPanel;
+	}
+	
+	private JPanel filterPanel(TableRowSorter<RezervacijaTableModel> sorter) {
+		JPanel filterPanel = new JPanel(new FlowLayout());
+
+	    JTextField tipSobeFilterField = new JTextField(10);
+	    JTextField sobaFilterField = new JTextField(10);
+	    JTextField cenaPocetnaField = new JTextField(5);
+	    JTextField cenaKrajnjaField = new JTextField(5);
+	    JComboBox<String> statusRezBox = new JComboBox<>();
+	    statusRezBox.addItem("Default");
+	    statusRezBox.addItem("NA CEKANJU");
+	    statusRezBox.addItem("POTVRDJENA");
+	    statusRezBox.addItem("ODBIJENA");
+	    statusRezBox.addItem("OTKAZANA");
+	    JTextField dodatneUslugeField = new JTextField(20);
+	   
+	    
+	    JButton filterButton = new JButton("Filter");
+	    filterButton.addActionListener(new ActionListener() {
+	    	@Override
+			public void actionPerformed(ActionEvent e) {
+	    		ArrayList<RowFilter<Object, Object>> filters = new ArrayList<>(3);
+
+                String tipSobeText = tipSobeFilterField.getText();
+                if (tipSobeText.length() > 0) {
+                    filters.add(RowFilter.regexFilter("(?i)" + tipSobeText, 1));
+                }
+
+                String sobaText = sobaFilterField.getText();
+                if (sobaText.length() > 0) {
+                    filters.add(RowFilter.regexFilter("(?i)" + sobaText, 2));
+                }
+
+                String minCenaText = cenaPocetnaField.getText();
+                String maxCenaText = cenaKrajnjaField.getText();
+                if (minCenaText.length() > 0 || maxCenaText.length() > 0) {
+                    try {
+                        int minCena = minCenaText.length() > 0 ? Integer.parseInt(minCenaText) : Integer.MIN_VALUE;
+                        int maxCena = maxCenaText.length() > 0 ? Integer.parseInt(maxCenaText) : Integer.MAX_VALUE;
+                        filters.add(new RowFilter<Object, Object>() {
+                            @Override
+                            public boolean include(Entry<? extends Object, ? extends Object> entry) {
+                                Float cena = (Float) entry.getValue(5);
+                                return cena >= minCena && cena <= maxCena;
+                            }
+                        });
+                    } catch (NumberFormatException e1) {
+
+                    }
+                }
+                
+                String statusRez = statusRezBox.getSelectedItem().toString();
+                if (!statusRez.equals("Default")) {
+                    filters.add(RowFilter.regexFilter("(?i)" + statusRez, 6));
+                }
+                
+                String[] dodatneUsluge = dodatneUslugeField.getText().split(" ");
+                if (dodatneUsluge.length > 0) {
+                	String regexPattern = "\\b(?:";
+                	for (String r:dodatneUsluge) {
+                		regexPattern+= r+"|";
+                		
+                	}
+                	regexPattern = regexPattern.substring(0, regexPattern.length()-1)+")\\b"; // \\s*\\(\"\\s*word\\s*\"\\)";
+
+                	System.out.println(regexPattern);
+                    filters.add(RowFilter.regexFilter(regexPattern, 7));
+                }
+
+                RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filters);
+                sorter.setRowFilter(combinedFilter);
+			}
+	    });
+	    
+	    
+	    JButton sortNajmanjeCena = new JButton("Sort po najmanjoj ceni");
+	    sortNajmanjeCena.addActionListener(new ActionListener() {
+	    	@Override
+			public void actionPerformed(ActionEvent e) {
+	    		ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
+	    		sorter.setSortKeys(new ArrayList<>());
+	    	    sortKeys.add(new RowSorter.SortKey(5, SortOrder.ASCENDING));
+	    		sorter.setSortKeys(sortKeys);
+			}
+	    });
+	    JButton sortNajvecaButton = new JButton("Sort po najvecoj ceni");
+	    sortNajvecaButton.addActionListener(new ActionListener() {
+	    	@Override
+			public void actionPerformed(ActionEvent e) {
+	    		ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
+	    		sorter.setSortKeys(new ArrayList<>());
+	    		
+	    	    sortKeys.add(new RowSorter.SortKey(5, SortOrder.DESCENDING));
+	    		sorter.setSortKeys(sortKeys);
+			}
+	    });
+	    
+	    JButton removeSortButton = new JButton("Unsorted");
+	    removeSortButton.addActionListener(new ActionListener() {
+	    	@Override
+			public void actionPerformed(ActionEvent e) {
+	    		ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
+	    		sorter.setSortKeys(new ArrayList<>());
+	    		
+	    	    sortKeys.add(new RowSorter.SortKey(5, SortOrder.UNSORTED));
+	    		sorter.setSortKeys(sortKeys);
+			}
+	    });
+	    
+	    
+	    filterPanel.add(new JLabel("Filter by Tip Sobe:"));
+	    filterPanel.add(tipSobeFilterField);
+	    filterPanel.add(new JLabel("Filter by Soba ID:"));
+	    filterPanel.add(sobaFilterField);
+	    filterPanel.add(new JLabel("Najmanja cena:"));
+	    filterPanel.add(cenaPocetnaField);
+	    filterPanel.add(new JLabel("Najveca cena:"));
+	    filterPanel.add(cenaKrajnjaField);
+	    filterPanel.add(new JLabel("Dodatne usluge:"));
+	    filterPanel.add(dodatneUslugeField);
+	    filterPanel.add(statusRezBox);
+	    filterPanel.add(filterButton);
+	    filterPanel.add(removeSortButton);
+	    filterPanel.add(sortNajmanjeCena);
+	    filterPanel.add(sortNajvecaButton);
+	    
+	    return filterPanel;
+	}
+	
 	
 	private JPanel sobePanel() {
 		HashMap<Integer, Soba> sobe = SobaManager.sobe;

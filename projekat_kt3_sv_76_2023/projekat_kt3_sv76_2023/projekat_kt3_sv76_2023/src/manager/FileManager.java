@@ -596,6 +596,7 @@ public class FileManager {
 						}else if(aktivanCenovnik.equals("Neaktivan")) {
 							aktivan = false;
 						}else if(aktivanCenovnik.equals("SobeSpremanje")) continue;
+						else if (aktivanCenovnik.equals("SobeSredjene")) continue;
 						else throw new Exception("Fali podatak o aktivnosti cenovnika (pre reci Cenovnik u nazivu folder)");
 						
 						String pocetak = nazivCenovnika.split(" ")[2];

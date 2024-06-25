@@ -84,7 +84,7 @@ public class RecepcionerManager {
 					return "Status je izmenjen";
 				}
 			}
-			throw new Exception("Trazena rezervacija ne postoji");
+			throw new Exception("Trazena rezervacija ne postoji ili je njen status izmenjen");
 		}catch(Exception e) {
 			return e.getMessage();
 		}
