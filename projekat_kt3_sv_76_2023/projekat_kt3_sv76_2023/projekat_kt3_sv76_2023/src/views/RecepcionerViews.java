@@ -273,12 +273,14 @@ public class RecepcionerViews extends JFrame{
                 
                 String[] dodatneUsluge = dodatneUslugeField.getText().split(" ");
                 if (dodatneUsluge.length > 0) {
-                	String regexPattern = "\\b(?:";
+                	//String regexPattern = "\\b(?:";
+                	String regexPattern="";
                 	for (String r:dodatneUsluge) {
-                		regexPattern+= r+"|";
+                		regexPattern += "(?=.*\\"+r+"\\b)";
+                		//regexPattern+= r+"|";
                 		
                 	}
-                	regexPattern = regexPattern.substring(0, regexPattern.length()-1)+")\\b"; // \\s*\\(\"\\s*word\\s*\"\\)";
+                	//regexPattern = regexPattern.substring(0, regexPattern.length()-1)+")\\b"; // \\s*\\(\"\\s*word\\s*\"\\)";
 
                 	System.out.println(regexPattern);
                     filters.add(RowFilter.regexFilter(regexPattern, 7));
