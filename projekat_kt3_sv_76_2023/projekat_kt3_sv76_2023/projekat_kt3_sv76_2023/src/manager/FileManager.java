@@ -201,7 +201,25 @@ public class FileManager {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+	private void upisiSredjeneSobe(Sobarica sobarica) {
+		try {
+			String folderPath = "../data/SobeSredjene";
+			File folder = new File(folderPath);
+			if(!folder.exists()) {
+				folder.mkdir();
+			}
+		
+			String filePath = folderPath + File.separator + sobarica.getKorisnickoIme()+"Sobe.csv";
+			FileWriter writer = new FileWriter(filePath, false);
+			writer.write("Sobe"+"\n");
+			for(LocalDate dan:sobarica.getSredjeneSobe()) {
+				writer.write(dan.toString()+"\n");
+			}
+			writer.close();
+		}catch(Exception e) {
+			
+		}
+	}
 	public void upisiZaposlene() {
 		try {
 			FileWriter writer = this.getFileWriter("zaposleni.csv");
@@ -226,6 +244,8 @@ public class FileManager {
 							+sob.getTip()+","+sob.getStrucnaSprema()+","+Integer.toString(sob.getStaz())+","+Float.toString(sob.primanja())+"\n";
 				
 				this.upisiDodeljeneSobe(sob);
+				this.upisiSredjeneSobe(sob);
+				
 				writer.write(str);
 			}
 			writer.close();
@@ -459,6 +479,43 @@ public class FileManager {
 			return false;
 		}
 	}
+	
+	public boolean ucitajSredjeneSobe(Sobarica sob) {
+		try{
+			/*String currentDir = System.getProperty("user.dir");
+			File parentFolderPath = new File(currentDir).getParentFile();
+			String folderPath = parentFolderPath.getPath()+File.separator+"data"+File.separator+"SobeSpremanje";*/
+			String folderPath = "../data"+File.separator+"SobeSredjene";
+			
+			File folder = new File(folderPath);
+			//System.out.println(folderPath);
+			
+			if(!folder.exists()) {
+				folder.mkdir();
+				throw new Exception("Podataka nema");
+			}
+			
+			
+			String filePath = folderPath + File.separator + sob.getKorisnickoIme()+"Sobe.csv";
+			//System.out.println(filePath);
+			//System.out.println(new File(filePath));
+			FileReader reader = new FileReader(filePath);
+			BufferedReader br = new BufferedReader(reader);
+			//BufferedReader br = this.getBufferedReader("Sobe.csv");
+			if(br==null) return false;
+			
+			br.readLine();
+			String line;
+			while((line=br.readLine())!=null) {
+				sob.dodajSredjenuSobu(LocalDate.parse(line));
+			}
+			br.close();
+			return true;
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+	}
 	public boolean ucitajZaposlene() {
 		try {			
 			BufferedReader br = this.getBufferedReader("zaposleni.csv");
@@ -499,6 +556,7 @@ public class FileManager {
 				}else if(tip.equals("Sobarica")) {
 					Sobarica sobarica = new Sobarica(ime,prezime,pol,datumRodjenja,telefon,adresa,korisnickoIme,lozinka,strucnaSprema,staz,tip);
 					this.ucitajDodeljeneSobe(sobarica);
+					this.ucitajSredjeneSobe(sobarica);
 					SobaricaManager.sobarice.put(korisnickoIme, sobarica);
 				}else throw new Exception("Tip zaposlenog nije registrovan u sistemu");
 			}

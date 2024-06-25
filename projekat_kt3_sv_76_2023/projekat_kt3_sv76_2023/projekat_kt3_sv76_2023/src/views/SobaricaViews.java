@@ -68,7 +68,7 @@ public class SobaricaViews extends JFrame{
 	    pregledSobaPanel.add(new JLabel("Pregled soba"), BorderLayout.NORTH);
 
 	    HashMap<Integer, Soba> sobe = SobaricaManager.sobarice.get(korisnickoIme).getDodeljeneSobe();
-	    
+	    System.out.println(SobaricaManager.sobarice.get(korisnickoIme).getSredjeneSobe());
 	    JPanel sobePanel = new JPanel(new GridBagLayout());
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.insets = new Insets(5, 5, 5, 5);
