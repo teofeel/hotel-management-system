@@ -23,8 +23,8 @@ public class meni {
 		AdminManager.getInstance().otpustiZaposlenog("nikolaRecepcioner");
 		
 		
-		RecepcionerManager.getInstance().checkInProces("Milica", "Milic", "Zensko", "1999-01-01", "123123123", "Neka adresa 13", "64324732", "milica@example.com");
-		RecepcionerManager.getInstance().checkInProces("Ana", "Anic", "Zensko", "1999-01-01", "123123123", "Neka adresa 13", "64324732", "ana@example.com");
+		RecepcionerManager.getInstance().checkInProces("Milica", "Milic", "Zensko", "1999-01-01", "123123123", "Neka adresa 13", "1", "milica@example.com");
+		RecepcionerManager.getInstance().checkInProces("Ana", "Anic", "Zensko", "1999-01-01", "123123123", "Neka adresa 13", "1", "ana@example.com");
 
 		CenovnikManager.cenovnici.add(new Cenovnik("2024-01-01", "2024-12-31", true));
 		CenovnikManager.getInstance().dodajNovuSobu(new TipSobe(TipSobeEnum.JEDNOKREVETNA.toString(),50));
@@ -42,6 +42,7 @@ public class meni {
 			sifraSobe++;
 		}
 		
+		SobaManager.sobe.get(111).setAmenities("slon");
 		
 		CenovnikManager.getInstance().dodajNovuUslugu("Dorucak","8");
 		CenovnikManager.getInstance().dodajNovuUslugu("Rucak", "10");

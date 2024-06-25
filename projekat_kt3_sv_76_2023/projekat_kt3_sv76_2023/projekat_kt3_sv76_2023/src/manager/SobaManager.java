@@ -168,6 +168,68 @@ public class SobaManager {
 		return tipoviSobe;
 	}
 	
+	public ArrayList<String> pregledSlobodnihTipovaSoba(LocalDate pocetak, LocalDate kraj, String dodaci) {
+		ArrayList<String> tipoviSobe = new ArrayList<String>();
+		
+		if(pocetak.isBefore(LocalDate.now()) || kraj.isBefore(LocalDate.now()))
+			return tipoviSobe;
+		
+		for(TipSobeEnum ts:TipSobeEnum.values()) {
+			if(this.pregledSlobodnihSoba(pocetak, kraj, ts.toString(), dodaci) && 
+					!tipoviSobe.contains(ts.toString())) {
+				tipoviSobe.add(ts.toString());
+			}
+		}
+		return tipoviSobe;
+	}
+	
+	public static boolean pregledSlobodnihSoba(LocalDate pocetak, LocalDate kraj, String tipSobe, String amenities) {
+		ArrayList<Soba> sobePoTipu = new ArrayList<Soba>();
+
+		for (Soba soba : SobaManager.sobe.values()) {
+			int br=0;
+			if(!amenities.equals("")) {
+				for(String amenity:amenities.split(" ")) {
+					if(amenity.equals("Standardno")) continue;
+					if(!soba.getAmenities().contains(amenity))
+						br+=1;
+				}
+			}
+			
+			if(soba.getNazivSobe().equals(tipSobe) && soba.getStatus().equals(StatusSobe.SLOBODNA) && br==0) {
+				sobePoTipu.add(soba);
+			}
+		}
+		if (sobePoTipu.isEmpty()) {
+			//System.out.println("Nema slbodnih soba");
+			return false;
+		}
+		
+		for (Rezervacija rezervacija : RezervacijaManager.rezervacije) {
+			if (rezervacija.getDatumOdlaska().minusDays(1).isBefore(pocetak) || rezervacija.getDatumDolaska().isAfter(kraj)) {
+				continue;
+			}
+			
+			if (sobePoTipu.isEmpty()) {
+				//System.out.println("Nema slobodnih soba");
+				return false;
+			}
+			
+			if (rezervacija.getTipSobe().getNaziv().equals(tipSobe) && rezervacija.getStatus().equals(StatusRezervacije.POTVRDJENA)){
+				sobePoTipu.remove(0);
+			}
+		}
+		if (sobePoTipu.isEmpty()) {
+			//System.out.println("Nema slobodnih soba");
+			return false;
+		}
+		
+		/*for(Soba s:sobePoTipu) {
+			System.out.println(s);
+		}*/
+		return true;
+	}
+	
 	public static boolean pregledSlobodnihSoba(LocalDate pocetak, LocalDate kraj, String tipSobe) {
 		ArrayList<Soba> sobePoTipu = new ArrayList<Soba>();
 		

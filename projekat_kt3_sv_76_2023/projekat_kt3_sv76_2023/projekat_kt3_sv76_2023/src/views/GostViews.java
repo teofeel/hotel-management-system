@@ -98,9 +98,19 @@ public class GostViews extends JFrame{
         JDateChooser datumOdlaska = new JDateChooser();
         datumOdlaska.setDate(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         panel.add(datumOdlaska, gbc);
-
+        
         
         gbc.gridy = 3;
+        gbc.gridx = 0;
+        JLabel amenitiesLabel= new JLabel("Dodaci sobe:");
+        panel.add(amenitiesLabel, gbc);
+        
+        gbc.gridx = 1;
+        JTextField amenitiesField = new JTextField();
+        panel.add(amenitiesField, gbc);
+
+        
+        gbc.gridy = 4;
         gbc.gridx = 0;
         JButton resetButton = new JButton("Reset");
         panel.add(resetButton, gbc);
@@ -115,6 +125,7 @@ public class GostViews extends JFrame{
         JLabel peopleCountLabel = new JLabel("Broj Ljudi:");
         JButton novaRezervacijaButton = new JButton("Posalji zahtev");
         
+        
         listRoomsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -127,11 +138,15 @@ public class GostViews extends JFrame{
             	
                 tipoviSoba.removeAllItems();
 
-               
                 ArrayList<String> slobodneSobe = SobaManager.getInstance().pregledSlobodnihTipovaSoba(
                         LocalDate.ofInstant(datumDolaska.getDate().toInstant(), ZoneId.systemDefault()),
-                        LocalDate.ofInstant(datumOdlaska.getDate().toInstant(), ZoneId.systemDefault())
+                        LocalDate.ofInstant(datumOdlaska.getDate().toInstant(), ZoneId.systemDefault()),
+                        amenitiesField.getText()
                 );
+                /*ArrayList<String> slobodneSobe = SobaManager.getInstance().pregledSlobodnihTipovaSoba(
+                        LocalDate.ofInstant(datumDolaska.getDate().toInstant(), ZoneId.systemDefault()),
+                        LocalDate.ofInstant(datumOdlaska.getDate().toInstant(), ZoneId.systemDefault())
+                );*/
 
                
                 for (String roomType : slobodneSobe) {
@@ -139,7 +154,7 @@ public class GostViews extends JFrame{
                 }
 
               
-                gbc.gridy = 4;
+                gbc.gridy = 5;
                 gbc.gridx = 0;
                 
                 panel.add(roomTypeLabel, gbc);
@@ -148,7 +163,7 @@ public class GostViews extends JFrame{
                 
                 panel.add(tipoviSoba, gbc);
 
-                gbc.gridy = 5;
+                gbc.gridy = 6;
                 gbc.gridx = 0;
                 
                 panel.add(peopleCountLabel, gbc);
@@ -158,7 +173,7 @@ public class GostViews extends JFrame{
                 panel.add(brojLjudi, gbc);
 
                
-                gbc.gridy = 6;
+                gbc.gridy = 7;
                 gbc.gridx = 0;
                 gbc.gridwidth = 2;
                 
@@ -223,16 +238,24 @@ public class GostViews extends JFrame{
         novaRezervacijaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	String poruka = GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get(korisnickoIme), 
-						CenovnikManager.cenovnici.get(0).getTipoviSoba().get(tipoviSoba.getSelectedItem()), Integer.parseInt(brojLjudi.getSelectedItem().toString()),
-						LocalDate.ofInstant(datumDolaska.getDate().toInstant(), ZoneId.systemDefault()).toString(), 
-						LocalDate.ofInstant(datumOdlaska.getDate().toInstant(), ZoneId.systemDefault()).toString(), 
-						new ArrayList<DodatneUsluge>());
+            	try {
+            		String tipSobe = tipoviSoba.getSelectedItem().toString();
+            		if (tipSobe.equals("")) throw new Exception();
+            		
+            		String poruka = GostManager.getInstance().zahtevRezervacija(GostManager.gosti.get(korisnickoIme), 
+    						CenovnikManager.cenovnici.get(0).getTipoviSoba().get(tipoviSoba.getSelectedItem()), Integer.parseInt(brojLjudi.getSelectedItem().toString()),
+    						LocalDate.ofInstant(datumDolaska.getDate().toInstant(), ZoneId.systemDefault()).toString(), 
+    						LocalDate.ofInstant(datumOdlaska.getDate().toInstant(), ZoneId.systemDefault()).toString(), 
+    						new ArrayList<DodatneUsluge>());
+                	
+                    JOptionPane.showMessageDialog(panel, poruka);
+                    
+                    novaRezervacijaButton.getModel().setPressed(false);
+                    novaRezervacijaButton.getModel().setArmed(false);
+            	}catch(Exception e1) {
+            		JOptionPane.showMessageDialog(panel, "Nije moguce napraviti rez");
+            	}
             	
-                JOptionPane.showMessageDialog(panel, poruka);
-                
-                novaRezervacijaButton.getModel().setPressed(false);
-                novaRezervacijaButton.getModel().setArmed(false);
             }
         });
         
