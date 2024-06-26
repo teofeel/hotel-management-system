@@ -153,7 +153,7 @@ public class meni {
 		
 		//System.out.println(IzvestajiManager.getInstance().sredjeneSobe(SobaricaManager.sobarice.get("janaSobarica"), "2024-05-27", "2024-08-27"));
 		
-		System.out.println(IzvestajiManager.getInstance().sobaPrihodi( "2024-05-27", "2024-08-27"));
+		System.out.println(IzvestajiManager.getInstance().sobaPrihodi("2024-05-01", "2024-07-01"));
 		
 		
 		LoginView loginWindow = new LoginView();
