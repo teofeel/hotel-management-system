@@ -92,7 +92,7 @@ public class IzvestajiPanel extends JPanel{
 		kreiraneRezButton.addActionListener(new ActionListener() {
 			@Override 
 			public void actionPerformed(ActionEvent e) {
-				
+				new KreiraneRezChart();
 			}
 		});
 		

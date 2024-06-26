@@ -1,27 +1,26 @@
 package views;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import javax.swing.JFrame;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
 
-import javax.swing.*;
-import java.awt.*;
-import java.time.*;
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-
-import java.util.*;
-import manager.*;
 import entity.*;
+import manager.*;
 
-public class OpterecenostSobaricaChart extends JFrame{
-	public OpterecenostSobaricaChart(){
+public class KreiraneRezChart extends JFrame{
+	public KreiraneRezChart(){
 		setSize(500,500);
-		setTitle("Opterecenost Sobarica");
+		setTitle("Kreirane Rezervacije");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		JFreeChart chart = createChart(createDataset());
@@ -35,7 +34,7 @@ public class OpterecenostSobaricaChart extends JFrame{
 	
 	  private static JFreeChart createChart(DefaultPieDataset dataset) {
 	        JFreeChart chart = ChartFactory.createPieChart(
-	                "Opterecenost Sobarica",   
+	                "Kreirane Rezervacije",   
 	                dataset,             
 	                true,                
 	                true,
@@ -44,9 +43,11 @@ public class OpterecenostSobaricaChart extends JFrame{
 	        PiePlot plot = (PiePlot) chart.getPlot();
 	        
 	        Random rand = new Random();
-	        for(Sobarica s:SobaricaManager.sobarice.values()) {
-	        	 plot.setSectionPaint(s.getKorisnickoIme(), new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
-	        }
+	        
+	        plot.setSectionPaint("NA_CEKANJU", new Color(123, 104, 238));
+	        plot.setSectionPaint("POTVRDJENE", new Color(255, 165, 0));
+	        plot.setSectionPaint("OTKAZANE", new Color(60, 179, 113));
+	        plot.setSectionPaint("ODBIJENE", new Color(255, 20, 147));
 
 	        return chart;
 	    }
@@ -55,7 +56,7 @@ public class OpterecenostSobaricaChart extends JFrame{
         DefaultPieDataset dataset = new DefaultPieDataset();
         HashMap<String, Integer> opterecenost = new HashMap<String, Integer>();
         
-        opterecenost = IzvestajiManager.getInstance().opterecenostSobarica();
+        opterecenost = IzvestajiManager.getInstance().statusRezervacijaPrethodniMesec();
         
         for(Map.Entry<String, Integer> entry:opterecenost.entrySet()) {
         	 dataset.setValue(entry.getKey(), entry.getValue());

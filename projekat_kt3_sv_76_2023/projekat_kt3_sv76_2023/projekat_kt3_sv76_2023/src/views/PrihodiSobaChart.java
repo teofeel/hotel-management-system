@@ -21,14 +21,14 @@ import manager.*;
 
 public class PrihodiSobaChart extends JFrame{
 	public PrihodiSobaChart(){
-		setSize(1000,1000);
+		setSize(600,600);
 		setTitle("Chart");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		JFreeChart chart = createChart(createDataset());
 		
 		ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new Dimension(800, 600));
+		chartPanel.setPreferredSize(new Dimension(600, 600));
         setContentPane(chartPanel);
         
         setVisible(true);
