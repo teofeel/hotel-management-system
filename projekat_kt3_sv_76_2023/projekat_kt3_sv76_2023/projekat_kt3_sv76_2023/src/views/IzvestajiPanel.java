@@ -23,7 +23,7 @@ public class IzvestajiPanel extends JPanel{
 	private JDateChooser pocetakDatumPicker;
 	private JDateChooser krajDatumPicker;
 	private JButton getIzvestajiButton;
-	private JButton grafikoniButton;
+	private JButton prihodPoSobiButton;
 	
 	
 	private ArrayList<Float> prihodiRashodi;
@@ -60,7 +60,7 @@ public class IzvestajiPanel extends JPanel{
 		this.krajDatumPicker.setDate(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		
 		this.getIzvestajiButton = new JButton("Izvestaji");
-		this.grafikoniButton = new JButton("Grafikoni");
+		this.prihodPoSobiButton = new JButton("Prihodi po sobi");
         
 		getIzvestajiButton.addActionListener(new ActionListener() {
 			@Override 
@@ -72,10 +72,17 @@ public class IzvestajiPanel extends JPanel{
 			}
 		});
         
+		prihodPoSobiButton.addActionListener(new ActionListener() {
+			@Override 
+			public void actionPerformed(ActionEvent e) {
+				new PrihodiSobaChart();
+			}
+		});
+		
         fieldPanel.add(this.pocetakDatumPicker);
         fieldPanel.add(this.krajDatumPicker);
         fieldPanel.add(this.getIzvestajiButton);
-        fieldPanel.add(this.grafikoniButton);
+        fieldPanel.add(this.prihodPoSobiButton);
         
         return fieldPanel;
 	}

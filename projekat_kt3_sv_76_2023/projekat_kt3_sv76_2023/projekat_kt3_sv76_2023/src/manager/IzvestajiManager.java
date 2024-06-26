@@ -217,7 +217,7 @@ public class IzvestajiManager {
 			
 			for(Soba s:SobaManager.sobe.values()) {
 				if(!sobePrihodi.containsKey(s.getSifra()))
-					sobePrihodi.put(s.getSifra(), 0.0f);
+					sobePrihodi.put(s.getSifra(), 0f);
 			}
 			
 			return sobePrihodi;
@@ -246,6 +246,12 @@ public class IzvestajiManager {
 				if(rez.getStatus().equals(StatusRezervacije.ODBIJENA) || rez.getStatus().equals(StatusRezervacije.NA_CEKANJU))
 					continue;
 				
+				if(tipSobe.equals("Ukupno") && ( rez.getDatumOdlaska().isAfter(prethodniDatumPocetak.minusDays(1)) 
+						&& rez.getDatumOdlaska().isBefore(prethodniDatumKraj.plusDays(1)))) {
+					prihod+=rez.getCena();
+					continue;
+				}
+				
 				if(rez.getTipSobe().getNaziv().equals(tipSobe) && ( rez.getDatumOdlaska().isAfter(prethodniDatumPocetak.minusDays(1)) 
 						&& rez.getDatumOdlaska().isBefore(prethodniDatumKraj.plusDays(1))))
 					prihod+=rez.getCena();
@@ -253,7 +259,6 @@ public class IzvestajiManager {
 			
 			prihodi.add(prihod);
 		}
-		
 		return prihodi;
 	}
 	
