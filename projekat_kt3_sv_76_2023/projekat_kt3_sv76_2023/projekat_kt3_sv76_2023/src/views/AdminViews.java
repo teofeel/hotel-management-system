@@ -79,6 +79,13 @@ public class AdminViews extends JFrame{
         });
         
         izvestajiButton = new JButton("Izvestaji");
+        /*izvestajiButton.addActionListener(new ActionListener() {
+        	@Override 
+			public void actionPerformed(ActionEvent e) {
+				new IzvestajiViews();
+			}
+        });   */   
+        
         izvestajiButton.addActionListener(new NavbarButtonListener("Izvestaji"));
         
         logout = new JButton("Logout");
@@ -111,7 +118,7 @@ public class AdminViews extends JFrame{
 		contentPanel.add(this.gostiPanel(), "Gosti");
 		contentPanel.add(this.dodajSobuPanel(), "DodajSobu");
 		contentPanel.add(this.sobePanel(), "Sobe");
-		contentPanel.add(this.izvestajiPanel(), "Izvestaji");
+		contentPanel.add(new IzvestajiPanel(), "Izvestaji");
 
 		add(navbar,BorderLayout.NORTH);
 		add(contentPanel, BorderLayout.CENTER);

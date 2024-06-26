@@ -6,6 +6,8 @@ import java.util.*;
 import entity.*;
 import enumi.StatusRezervacije;
 import java.time.temporal.ChronoUnit;
+import manager.*;
+
 public class IzvestajiManager {
 	private static IzvestajiManager instance = new IzvestajiManager();
 	
@@ -70,23 +72,28 @@ public class IzvestajiManager {
 		}
 	}
 	
-	public int sredjeneSobe(Sobarica sob, String p, String k) {
+	public HashMap<String, Integer> sredjeneSobe(String p, String k) {
 		try {
 			if(p.equals("") || k.equals("")) throw new Exception();
 			
 			LocalDate pocetak = LocalDate.parse(p);
 			LocalDate kraj = LocalDate.parse(k);
 			
-			int br=0;
-			for(LocalDate dan:sob.getSredjeneSobe()) {
-				if(dan.isAfter(pocetak.minusDays(1)) && dan.isBefore(kraj.plusDays(1))) {
-					br+=1;
+			HashMap<String, Integer> sobaricaSredjene = new HashMap<String, Integer>();
+			for(Sobarica sob:SobaricaManager.sobarice.values()) {
+				int br=0;
+				for(LocalDate dan:sob.getSredjeneSobe()) {
+					if(dan.isAfter(pocetak.minusDays(1)) && dan.isBefore(kraj.plusDays(1))) {
+						br+=1;
+					}
 				}
+				sobaricaSredjene.put(sob.getKorisnickoIme(), br);
 			}
-			return br;
+			
+			return sobaricaSredjene;
 
 		}catch(Exception e) {
-			return 0;
+			return new HashMap<String, Integer>();
 		}
 	}
 	
@@ -172,7 +179,10 @@ public class IzvestajiManager {
 					sobeNocenja.put(rez.getSoba().getSifra(), broj);
 				}	
 			}
-			
+			for(Soba s:SobaManager.sobe.values()) {
+				if(!sobeNocenja.containsKey(s.getSifra()))
+					sobeNocenja.put(s.getSifra(), 0);
+			}
 			return sobeNocenja;
 		}catch(Exception e) {
 			HashMap<Integer, Integer> sobeNocenja = new HashMap<Integer, Integer>();
@@ -203,6 +213,11 @@ public class IzvestajiManager {
 					
 					sobePrihodi.put(rez.getSoba().getSifra(), prihod);
 				}	
+			}
+			
+			for(Soba s:SobaManager.sobe.values()) {
+				if(!sobePrihodi.containsKey(s.getSifra()))
+					sobePrihodi.put(s.getSifra(), 0.0f);
 			}
 			
 			return sobePrihodi;
