@@ -24,7 +24,8 @@ public class IzvestajiPanel extends JPanel{
 	private JDateChooser krajDatumPicker;
 	private JButton getIzvestajiButton;
 	private JButton prihodPoSobiButton;
-	
+	private JButton opterecenostSobaricaButton;
+	private JButton kreiraneRezButton;
 	
 	private ArrayList<Float> prihodiRashodi;
 	private HashMap<String, Integer> sobariceSredjeneSobe;
@@ -61,7 +62,9 @@ public class IzvestajiPanel extends JPanel{
 		
 		this.getIzvestajiButton = new JButton("Izvestaji");
 		this.prihodPoSobiButton = new JButton("Prihodi po sobi");
-        
+		this.opterecenostSobaricaButton = new JButton("Opterecenost sobarica");
+		this.kreiraneRezButton = new JButton("Kreirane rezervacije");
+		
 		getIzvestajiButton.addActionListener(new ActionListener() {
 			@Override 
 			public void actionPerformed(ActionEvent e) {
@@ -79,10 +82,26 @@ public class IzvestajiPanel extends JPanel{
 			}
 		});
 		
+		opterecenostSobaricaButton.addActionListener(new ActionListener() {
+			@Override 
+			public void actionPerformed(ActionEvent e) {
+				new OpterecenostSobaricaChart();
+			}
+		});
+		
+		kreiraneRezButton.addActionListener(new ActionListener() {
+			@Override 
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
         fieldPanel.add(this.pocetakDatumPicker);
         fieldPanel.add(this.krajDatumPicker);
         fieldPanel.add(this.getIzvestajiButton);
         fieldPanel.add(this.prihodPoSobiButton);
+        fieldPanel.add(this.opterecenostSobaricaButton);
+        fieldPanel.add(this.kreiraneRezButton);
         
         return fieldPanel;
 	}
