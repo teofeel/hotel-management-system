@@ -443,11 +443,20 @@ public class AdminViews extends JFrame{
         return mainPanel;
 	}
 	
-	private void izmeniGosta(Gost gost) {
+	private void izmeniGosta(Gost gost, JTable gostTable) {
 		  JFrame izmenaFrame = new JFrame();
 	        izmenaFrame.setTitle("Izmena podataka");
 	        izmenaFrame.setSize(300, 300);
 	        izmenaFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	        
+	        
+	        izmenaFrame.addWindowListener(new WindowAdapter() {
+				@Override
+		        public void windowClosed(WindowEvent e) {
+					gostTable.updateUI();
+		        }
+				
+			});
 	        
 	        JPanel podaciPanel = new JPanel(new GridBagLayout());
 	        GridBagConstraints gbc = new GridBagConstraints();
@@ -523,8 +532,63 @@ public class AdminViews extends JFrame{
 	}
 	
 	public JPanel gostiPanel() {
-		JPanel gostiPanel = new JPanel();
-		gostiPanel.add(new JLabel("Gosti"), BorderLayout.NORTH);
+		JPanel gostiPanel = new JPanel(new BorderLayout());
+		
+		GostTableModel model = new GostTableModel();
+		JTable gostTable = new JTable(model);
+		
+		JScrollPane scrollPanel = new JScrollPane(gostTable);
+		scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		JPanel buttonPanel = new JPanel();
+		JButton obrisiButton = new JButton("Obrisi");
+        JButton izmeniButton = new JButton("Izmeni");
+        buttonPanel.add(izmeniButton);
+        buttonPanel.add(obrisiButton);
+        
+        obrisiButton.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+        			int modelRowIndex = gostTable.convertRowIndexToModel(gostTable.getSelectedRow());
+					Gost gost = model.getGost(modelRowIndex);
+        			
+        			String poruka = AdminManager.getInstance().obrisiGosta(gost.getKorisnickoIme());
+					
+					JOptionPane.showMessageDialog(buttonPanel, poruka);
+					
+					model.removeGost(modelRowIndex);
+					model.fireTableDataChanged();
+					gostTable.updateUI();
+        		}catch(Exception err) {
+        			JOptionPane.showMessageDialog(buttonPanel, "Nije selektovan ni jedan red tabele");
+        		}
+					
+			}
+        });
+        
+        izmeniButton.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+        			int modelRowIndex = gostTable.convertRowIndexToModel(gostTable.getSelectedRow());
+					Gost gost = model.getGost(modelRowIndex);
+        			
+					izmeniGosta(gost, gostTable);
+        		
+					gostTable.updateUI();
+        		}catch(Exception err) {
+        			JOptionPane.showMessageDialog(buttonPanel, "Nije selektovan ni jedan red tabele");
+        		}
+				//izmeniGosta(gost);
+			}
+        	
+        });
+		
+        gostiPanel.add(buttonPanel, BorderLayout.PAGE_START);
+		gostiPanel.add(scrollPanel);
+		return gostiPanel;
+		/*gostiPanel.add(new JLabel("Gosti"), BorderLayout.NORTH);
 		
 		int brojGostiju = GostManager.gosti.size();
 		JPanel listaGostijuPanel = new JPanel(new GridLayout(brojGostiju,1));
@@ -559,10 +623,10 @@ public class AdminViews extends JFrame{
 		JScrollPane scrollPane = new JScrollPane(listaGostijuPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        gostiPanel.add(scrollPane, BorderLayout.CENTER);
+        gostiPanel.add(scrollPane, BorderLayout.CENTER);*/
 		
 		
-		return gostiPanel;
+		
     }
 
     private void redKorisnika(JPanel panel, Korisnik korisnik) {
@@ -706,73 +770,6 @@ public class AdminViews extends JFrame{
 		sobePanel.add(buttonPanel, BorderLayout.PAGE_START);
 		sobePanel.add(scrollPanel);
     	return sobePanel;
-    	/*HashMap<Integer, Soba> sobe = SobaManager.sobe;
-    	
-    	JPanel sobeListaPanel = new JPanel(new GridLayout(sobe.size(),2));
-    	
-    	for(Soba s:sobe.values()) {
-			JLabel sifraSobe = new JLabel(Integer.toString(s.getSifra()));
-			JLabel tipSobe = new JLabel(s.getNazivSobe());
-			JLabel statusSobe = new JLabel(s.getStatus().toString());
-			
-			JButton dodaciSobe = new JButton("Amenities");
-			JButton izmeniSobu = new JButton("Izmeni Sobu");
-			JButton obrisiSobu = new JButton("Obrisi Sobu");
-			
-			obrisiSobu.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					String poruka = AdminManager.getInstance().izbrisiSobu(Integer.toString(s.getSifra()));
-					
-					JOptionPane.showMessageDialog(sobeListaPanel, poruka);
-				}
-			});
-			
-			sobeListaPanel.add(sifraSobe);
-			sobeListaPanel.add(tipSobe);
-			sobeListaPanel.add(statusSobe);
-			sobeListaPanel.add(dodaciSobe);
-			sobeListaPanel.add(izmeniSobu);			
-			sobeListaPanel.add(obrisiSobu);
-			
-			dodaciSobe.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					JFrame dodaciFrame = new JFrame();
-					dodaciFrame.setTitle("Dodaci");
-					dodaciFrame.setSize(300,300);
-					dodaciFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-					
-					JPanel dodaciPanel = new JPanel();
-					for(String dodatak:s.getAmenities()) {
-						JLabel dodatakLabel = new JLabel(dodatak);
-						
-						dodaciPanel.add(dodatakLabel);
-					}
-					
-					dodaciFrame.add(dodaciPanel);
-					dodaciFrame.setVisible(true);
-					
-				}
-			});
-			
-			izmeniSobu.addActionListener(new ActionListener() {
-				@Override 
-				public void actionPerformed(ActionEvent e) {
-					izmeniSobuFrame(s);
-				}
-			});
-			
-		}
-		
-		JScrollPane scrollPane = new JScrollPane(sobeListaPanel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        sobePanel.add(scrollPane, BorderLayout.CENTER);
-        
-        sobePanel.setMaximumSize(getMaximumSize());	
-        
-		return sobePanel;*/
     }
     
     private void izmeniSobuFrame(Soba s) {
@@ -892,21 +889,4 @@ public class AdminViews extends JFrame{
 		}
 		
 	}
-	
-	/*public static void pregledPodatakaZaposlenih() {
-		try {
-			System.out.println("Zaposleni");
-			for(Administrator admin : AdminManager.admini.values()) {
-				System.out.println(admin.toString());
-			}
-			for(Recepcioner r : RecepcionerManager.recepcioneri.values()) {
-				System.out.println(r.toString());
-			}
-			for(Sobarica s : SobaricaManager.sobarice.values()) {
-				System.out.println(s.toString());
-			}
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-	}*/
 }
