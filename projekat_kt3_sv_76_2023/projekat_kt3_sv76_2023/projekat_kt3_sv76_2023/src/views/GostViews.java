@@ -285,7 +285,8 @@ public class GostViews extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
             	try {
-            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		int row = rezervacijeTable.convertRowIndexToModel(rezervacijeTable.getSelectedRow());
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(row);
             		JFrame uslugeFrame = new JFrame("Usluge");
             		uslugeFrame.setSize(300, 300);
             		uslugeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -335,7 +336,8 @@ public class GostViews extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
             	try {
-            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		int row = rezervacijeTable.convertRowIndexToModel(rezervacijeTable.getSelectedRow());
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(row);
             		
             		String poruka = GostManager.getInstance().otkaziRezervaciju(GostManager.gosti.get(korisnickoIme),
                             rez.getDatumDolaska().toString(), rez.getDatumOdlaska().toString());

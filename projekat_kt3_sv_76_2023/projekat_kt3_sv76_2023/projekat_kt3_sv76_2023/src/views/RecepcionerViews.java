@@ -324,7 +324,7 @@ public class RecepcionerViews extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					int row = rezervacijeTable.getSelectedRow();
+					int row = rezervacijeTable.convertRowIndexToModel(rezervacijeTable.getSelectedRow());
 					
 					String gostEmail = RezervacijaManager.rezervacije.get(row).getGost();
 					String datumDolaska = RezervacijaManager.rezervacije.get(row).getDatumDolaska().toString();
@@ -345,7 +345,7 @@ public class RecepcionerViews extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					int row = rezervacijeTable.getSelectedRow();
+					int row = rezervacijeTable.convertRowIndexToModel(rezervacijeTable.getSelectedRow());
 					
 					String gostEmail = RezervacijaManager.rezervacije.get(row).getGost();
 					String datumDolaska = RezervacijaManager.rezervacije.get(row).getDatumDolaska().toString();
@@ -366,7 +366,9 @@ public class RecepcionerViews extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
             	try {
-            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		int modelRowIndex = rezervacijeTable.convertRowIndexToModel(rezervacijeTable.getSelectedRow());
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(modelRowIndex);
+            		
             		JFrame uslugeFrame = new JFrame("Usluge");
             		uslugeFrame.addWindowListener(new WindowAdapter() {
             			@Override
@@ -783,7 +785,11 @@ public class RecepcionerViews extends JFrame{
 		
 		sorter.setRowFilter(customFilter);
 		
-		checkInPanel.add(rezervacijeTable);
+		JScrollPane scrollPanel = new JScrollPane(rezervacijeTable);
+		scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		
+		
+		checkInPanel.add(scrollPanel);
 		
 		JButton zapocniCheckInButton = new JButton("Check In");
         JButton dodajUsluguButton = new JButton("Dodaj uslugu");

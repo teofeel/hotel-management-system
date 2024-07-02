@@ -224,8 +224,17 @@ public class AdminViews extends JFrame{
 	}
 	
 	 
-	private void izmeniZaposlenog(Zaposleni zaposleni) {
+	private void izmeniZaposlenog(Zaposleni zaposleni, JTable zaposleniTable) {
 		JFrame izmenaFrame = new JFrame();
+		
+		izmenaFrame.addWindowListener(new WindowAdapter() {
+			@Override
+	        public void windowClosed(WindowEvent e) {
+				zaposleniTable.updateUI();
+	        }
+			
+		});
+		
         izmenaFrame.setTitle("Izmena podataka");
         izmenaFrame.setSize(300, 300);
         izmenaFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -314,99 +323,58 @@ public class AdminViews extends JFrame{
         izmenaFrame.setVisible(true);
 	}
 	private JPanel zaposleniPanel() {
-		JPanel zaposleniPanel = new JPanel();
-		zaposleniPanel.add(new JLabel("Zaposleni"), BorderLayout.NORTH);
+		JPanel zaposleniPanel = new JPanel(new BorderLayout());
 		
-		int brojZaposlenih = AdminManager.admini.size()+RecepcionerManager.recepcioneri.size()+SobaricaManager.sobarice.size();
-		JPanel listaZaposlenihPanel = new JPanel(new GridLayout(brojZaposlenih,1));
+		ZaposleniTableModel model = new ZaposleniTableModel();
+		JTable zaposleniTable = new JTable(model);
 		
-		for(Administrator admin:AdminManager.admini.values()) {
-			JLabel imeZaposlenog = new JLabel(admin.getKorisnickoIme());
-            JButton otpustiButton = new JButton("Otpusti");
-            JButton izmeniButton = new JButton("Izmeni");
+		JPanel buttonPanel = new JPanel();
+		JButton otpustiButton = new JButton("Otpusti");
+        JButton izmeniButton = new JButton("Izmeni");
+        buttonPanel.add(izmeniButton);
+        buttonPanel.add(otpustiButton);
+        
+        otpustiButton.addActionListener(new ActionListener() {
+        	@Override 
+			public void actionPerformed(ActionEvent e) {
+        		try {
+        			int modelRowIndex = zaposleniTable.convertRowIndexToModel(zaposleniTable.getSelectedRow());
+        			Zaposleni zap = model.getZaposleni(modelRowIndex);
+        			
+        			String poruka = AdminManager.getInstance().otpustiZaposlenog(zap.getKorisnickoIme());
+        			JOptionPane.showMessageDialog(buttonPanel, poruka);
+        			
+        			model.removeZaposleni(modelRowIndex);
+        			model.fireTableDataChanged();
+        			zaposleniTable.updateUI();
+        			
+        			
+        		}catch(Exception err) {
+        			JOptionPane.showMessageDialog(buttonPanel, "Nije selektovan ni jedan red tabele");
+        		}
+			}
+        });
+        izmeniButton.addActionListener(new ActionListener() {
+			@Override 
+			public void actionPerformed(ActionEvent e) {
+				try {
+        			int modelRowIndex = zaposleniTable.convertRowIndexToModel(zaposleniTable.getSelectedRow());
+        			Zaposleni zap = model.getZaposleni(modelRowIndex);
+        			
+        			izmeniZaposlenog(zap, zaposleniTable);
+        			
+        		}catch(Exception err) {
+        			JOptionPane.showMessageDialog(buttonPanel, "Nije selektovan ni jedan red tabele");
+        		}
+			}
+		});
+        
 		
-            listaZaposlenihPanel.add(imeZaposlenog);
-            listaZaposlenihPanel.add(otpustiButton);
-            listaZaposlenihPanel.add(izmeniButton);
-            
-            otpustiButton.addActionListener(new ActionListener() {
-            	@Override 
-    			public void actionPerformed(ActionEvent e) {
-    				String poruka = AdminManager.getInstance().otpustiZaposlenog(admin.getKorisnickoIme());
-    				
-    				JOptionPane.showMessageDialog(listaZaposlenihPanel, poruka);
-    			}
-            });
-            izmeniButton.addActionListener(new ActionListener() {
-    			@Override 
-    			public void actionPerformed(ActionEvent e) {
-    				izmeniZaposlenog(admin);
-    				
-    				zaposleniPanel.removeAll();
-    				zaposleniPanel.add(zaposleniPanel());
-    				zaposleniPanel.revalidate();
-    				zaposleniPanel.repaint();
-    			}
-    		});
-		}
-		for(Recepcioner recp:RecepcionerManager.recepcioneri.values()) {
-			JLabel imeZaposlenog = new JLabel(recp.getKorisnickoIme());
-            JButton otpustiButton = new JButton("Otpusti");
-            JButton izmeniButton = new JButton("Izmeni");
-            
-            listaZaposlenihPanel.add(imeZaposlenog);
-            listaZaposlenihPanel.add(otpustiButton);
-            listaZaposlenihPanel.add(izmeniButton);
-            
-            otpustiButton.addActionListener(new ActionListener() {
-    			@Override 
-    			public void actionPerformed(ActionEvent e) {
-    				String poruka = AdminManager.getInstance().otpustiZaposlenog(recp.getKorisnickoIme());	
-    				JOptionPane.showMessageDialog(listaZaposlenihPanel, poruka);
-    				
-    				zaposleniPanel.removeAll();
-    				zaposleniPanel.add(zaposleniPanel());
-    				zaposleniPanel.revalidate();
-    				zaposleniPanel.repaint();
-    			}
-    		});
-            izmeniButton.addActionListener(new ActionListener() {
-    			@Override 
-    			public void actionPerformed(ActionEvent e) {
-    				izmeniZaposlenog(recp);
-    			}
-    		});
-		}
-		for(Sobarica sobarica:SobaricaManager.sobarice.values()) {
-			JLabel imeZaposlenog = new JLabel(sobarica.getKorisnickoIme());
-            JButton otpustiButton = new JButton("Otpusti");
-            JButton izmeniButton = new JButton("Izmeni");
-            
-            listaZaposlenihPanel.add(imeZaposlenog);
-            listaZaposlenihPanel.add(otpustiButton);
-            listaZaposlenihPanel.add(izmeniButton);
-            
-            otpustiButton.addActionListener(new ActionListener() {
-    			@Override 
-    			public void actionPerformed(ActionEvent e) {
-    				String poruka = AdminManager.getInstance().otpustiZaposlenog(sobarica.getKorisnickoIme());
-    				
-    				JOptionPane.showMessageDialog(listaZaposlenihPanel, poruka);
-    			}
-    		});
-            izmeniButton.addActionListener(new ActionListener() {
-    			@Override 
-    			public void actionPerformed(ActionEvent e) {
-    				izmeniZaposlenog(sobarica);
-    			}
-    		});
-		}
-
-		JScrollPane scrollPane = new JScrollPane(listaZaposlenihPanel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        zaposleniPanel.add(scrollPane, BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(zaposleniTable);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
+		zaposleniPanel.add(buttonPanel, BorderLayout.PAGE_START);
+		zaposleniPanel.add(scrollPane);
 		
 		return zaposleniPanel;
 	}
