@@ -1,9 +1,10 @@
 package views;
 
 import java.util.*;
-import java.util.Date;
 
 import javax.swing.*;
+import javax.swing.RowFilter.Entry;
+import javax.swing.table.TableRowSorter;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -11,7 +12,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.HashMap;
 
 import entity.*;
 import enumi.StrucnaSprema;
@@ -327,12 +327,27 @@ public class AdminViews extends JFrame{
 		
 		ZaposleniTableModel model = new ZaposleniTableModel();
 		JTable zaposleniTable = new JTable(model);
+		TableRowSorter<ZaposleniTableModel> sorter = new TableRowSorter<>(model);
+		zaposleniTable.setRowSorter(sorter);
 		
 		JPanel buttonPanel = new JPanel();
 		JButton otpustiButton = new JButton("Otpusti");
         JButton izmeniButton = new JButton("Izmeni");
+        JTextField imeField = new JTextField(10);
+        JComboBox<String> tipBox = new JComboBox<>();
+        tipBox.addItem("Default");
+        tipBox.addItem("Administrator");
+        tipBox.addItem("Recepcioner");
+        tipBox.addItem("Sobarica");
+        JButton filterButton = new JButton("Filter");
+        
+        buttonPanel.add(new JLabel("Korisnicko ime: "));
+        buttonPanel.add(imeField);
+        buttonPanel.add(tipBox);
+        buttonPanel.add(filterButton);
         buttonPanel.add(izmeniButton);
         buttonPanel.add(otpustiButton);
+        
         
         otpustiButton.addActionListener(new ActionListener() {
         	@Override 
@@ -368,6 +383,27 @@ public class AdminViews extends JFrame{
         		}
 			}
 		});
+        filterButton.addActionListener(new ActionListener() {
+	    	@Override
+			public void actionPerformed(ActionEvent e) {
+	    		ArrayList<RowFilter<Object, Object>> filters = new ArrayList<>(3);
+
+                String imeText = imeField.getText();
+                if (imeText.length() > 0) {
+                    filters.add(RowFilter.regexFilter("(?i)" + imeText, 0));
+                }
+
+                
+                String tip = tipBox.getSelectedItem().toString();
+                if (!tip.equals("Default")) {
+                    filters.add(RowFilter.regexFilter("(?i)" + tip, 3));
+                }
+               
+
+                RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filters);
+                sorter.setRowFilter(combinedFilter);
+			}
+	    });
         
 		
 		JScrollPane scrollPane = new JScrollPane(zaposleniTable);
@@ -536,6 +572,8 @@ public class AdminViews extends JFrame{
 		
 		GostTableModel model = new GostTableModel();
 		JTable gostTable = new JTable(model);
+		TableRowSorter<GostTableModel> sorter = new TableRowSorter<>(model);
+		gostTable.setRowSorter(sorter);
 		
 		JScrollPane scrollPanel = new JScrollPane(gostTable);
 		scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -543,6 +581,12 @@ public class AdminViews extends JFrame{
 		JPanel buttonPanel = new JPanel();
 		JButton obrisiButton = new JButton("Obrisi");
         JButton izmeniButton = new JButton("Izmeni");
+        JTextField imeField = new JTextField(15);
+        JButton filterButton = new JButton("Filter");
+        
+        buttonPanel.add(new JLabel("Email gosta: "));
+        buttonPanel.add(imeField);
+        buttonPanel.add(filterButton);
         buttonPanel.add(izmeniButton);
         buttonPanel.add(obrisiButton);
         
@@ -580,53 +624,24 @@ public class AdminViews extends JFrame{
         		}catch(Exception err) {
         			JOptionPane.showMessageDialog(buttonPanel, "Nije selektovan ni jedan red tabele");
         		}
-				//izmeniGosta(gost);
 			}
         	
         });
+        filterButton.addActionListener(new ActionListener() {
+	    	@Override
+			public void actionPerformed(ActionEvent e) {
+	    		String imeText = imeField.getText();
+                if (imeText.trim().length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + imeText, 0));
+                }
+			}
+	    });
 		
         gostiPanel.add(buttonPanel, BorderLayout.PAGE_START);
 		gostiPanel.add(scrollPanel);
 		return gostiPanel;
-		/*gostiPanel.add(new JLabel("Gosti"), BorderLayout.NORTH);
-		
-		int brojGostiju = GostManager.gosti.size();
-		JPanel listaGostijuPanel = new JPanel(new GridLayout(brojGostiju,1));
-		
-		for(Gost gost:GostManager.gosti.values()) {
-			JLabel imeGosta = new JLabel(gost.getKorisnickoIme());
-            JButton obrisiButton = new JButton("Obrisi");
-            JButton izmeniButton = new JButton("Izmeni");
-		
-            listaGostijuPanel.add(imeGosta);
-            listaGostijuPanel.add(obrisiButton);
-            listaGostijuPanel.add(izmeniButton);
-            
-            obrisiButton.addActionListener(new ActionListener() {
-            	@Override
-            	public void actionPerformed(ActionEvent e) {
-    					String poruka = AdminManager.getInstance().obrisiGosta(gost.getKorisnickoIme());
-    					
-    					JOptionPane.showMessageDialog(listaGostijuPanel, poruka);
-    			}
-            });
-            
-            izmeniButton.addActionListener(new ActionListener() {
-            	@Override
-            	public void actionPerformed(ActionEvent e) {
-    				izmeniGosta(gost);
-    			}
-            	
-            });
-		}
-		
-		JScrollPane scrollPane = new JScrollPane(listaGostijuPanel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        gostiPanel.add(scrollPane, BorderLayout.CENTER);*/
-		
-		
-		
     }
 
     private void redKorisnika(JPanel panel, Korisnik korisnik) {
@@ -719,12 +734,27 @@ public class AdminViews extends JFrame{
     	
     	SobaTableModel model = new SobaTableModel();
 		JTable sobeTable = new JTable(model);
+		TableRowSorter<SobaTableModel> sorter = new TableRowSorter<>(model);
+		sobeTable.setRowSorter(sorter);
 		
 		JScrollPane scrollPanel = new JScrollPane(sobeTable);
 		
 		JPanel buttonPanel = new JPanel();
 		JButton izmeniSobu = new JButton("Izmeni Sobu");
 		JButton obrisiSobu = new JButton("Obrisi Sobu");
+		JTextField sifraField = new JTextField(5);
+		JComboBox<String> tipBox= new JComboBox<String>();
+		tipBox.addItem("Default");
+		tipBox.addItem("Jednokrevetna (1)");
+		tipBox.addItem("Dvokrevetna (2)");
+		tipBox.addItem("Dvokrevetna (1+1)");
+		tipBox.addItem("Trokrevetna (2+1)");
+        JButton filterButton = new JButton("Filter");
+        
+        buttonPanel.add(new JLabel("Sifra sobe: "));
+        buttonPanel.add(sifraField);
+        buttonPanel.add(tipBox);
+        buttonPanel.add(filterButton);
 		buttonPanel.add(izmeniSobu);
 		buttonPanel.add(obrisiSobu);
 		
@@ -765,7 +795,32 @@ public class AdminViews extends JFrame{
 			}
 		});
 		
-		
+		filterButton.addActionListener(new ActionListener() {
+	    	@Override
+			public void actionPerformed(ActionEvent e) {
+	    		ArrayList<RowFilter<Object, Object>> filters = new ArrayList<>(3);
+
+                String sifraText = sifraField.getText();
+                if (sifraText.length() > 0) {
+                    filters.add(RowFilter.regexFilter("(?i)" + sifraText, 0));
+                }
+
+                
+                String tipSobe = tipBox.getSelectedItem().toString();
+                if (!tipSobe.equals("Default")) {
+                	filters.add(new RowFilter<Object, Object>() {
+                        @Override
+                        public boolean include(Entry<? extends Object, ? extends Object> entry) {
+                            String tip = (String) entry.getValue(1);
+                            return tip.equals(tipSobe);
+                        }
+                    });
+                }
+
+                RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filters);
+                sorter.setRowFilter(combinedFilter);
+			}
+	    });
 		
 		sobePanel.add(buttonPanel, BorderLayout.PAGE_START);
 		sobePanel.add(scrollPanel);
