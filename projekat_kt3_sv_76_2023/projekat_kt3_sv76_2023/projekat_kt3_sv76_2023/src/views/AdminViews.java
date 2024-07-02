@@ -651,9 +651,62 @@ public class AdminViews extends JFrame{
     }
 	
     private JPanel sobePanel() {
-    	JPanel sobePanel = new JPanel();
+    	JPanel sobePanel = new JPanel(new BorderLayout());
     	
-    	HashMap<Integer, Soba> sobe = SobaManager.sobe;
+    	SobaTableModel model = new SobaTableModel();
+		JTable sobeTable = new JTable(model);
+		
+		JScrollPane scrollPanel = new JScrollPane(sobeTable);
+		
+		JPanel buttonPanel = new JPanel();
+		JButton izmeniSobu = new JButton("Izmeni Sobu");
+		JButton obrisiSobu = new JButton("Obrisi Sobu");
+		buttonPanel.add(izmeniSobu);
+		buttonPanel.add(obrisiSobu);
+		
+		obrisiSobu.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int modelRowIndex = sobeTable.convertRowIndexToModel(sobeTable.getSelectedRow());
+					Soba s = model.getSobe(modelRowIndex);
+					
+					String poruka = AdminManager.getInstance().izbrisiSobu(Integer.toString(s.getSifra()));
+					JOptionPane.showMessageDialog(buttonPanel, poruka);
+					
+					model.removeSoba(modelRowIndex);
+        			model.fireTableDataChanged();
+					sobeTable.updateUI();
+				}catch(Exception err) {
+					JOptionPane.showMessageDialog(buttonPanel, "Nije selektovan ni jedan red tabele");
+				}
+				
+			}
+		});
+		
+		izmeniSobu.addActionListener(new ActionListener() {
+			@Override 
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int modelRowIndex = sobeTable.convertRowIndexToModel(sobeTable.getSelectedRow());
+					Soba s = model.getSobe(modelRowIndex);
+					
+					izmeniSobuFrame(s);
+					
+					sobeTable.updateUI();
+				}catch(Exception err) {
+					JOptionPane.showMessageDialog(buttonPanel, "Nije selektovan ni jedan red tabele");
+				}
+				
+			}
+		});
+		
+		
+		
+		sobePanel.add(buttonPanel, BorderLayout.PAGE_START);
+		sobePanel.add(scrollPanel);
+    	return sobePanel;
+    	/*HashMap<Integer, Soba> sobe = SobaManager.sobe;
     	
     	JPanel sobeListaPanel = new JPanel(new GridLayout(sobe.size(),2));
     	
@@ -719,7 +772,7 @@ public class AdminViews extends JFrame{
         
         sobePanel.setMaximumSize(getMaximumSize());	
         
-		return sobePanel;
+		return sobePanel;*/
     }
     
     private void izmeniSobuFrame(Soba s) {

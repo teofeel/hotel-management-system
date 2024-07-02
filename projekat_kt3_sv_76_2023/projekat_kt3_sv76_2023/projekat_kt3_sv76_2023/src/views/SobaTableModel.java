@@ -15,6 +15,10 @@ public class SobaTableModel extends AbstractTableModel{
 	public Soba getSobe(int index) {
 		return sobe.get(index);
 	}
+	public void removeSoba(int index) {
+		sobe.remove(index);
+	}
+	
 	@Override
 	public int getColumnCount() {
 		return columnNames.length;
