@@ -19,7 +19,9 @@ public class meni {
 		AdminManager.getInstance().dodajZaposlenog("Recepcioner", "Mika", "Mikic", "Musko","1986-11-23", "1123545455", "Dunavska 14", "mikaRecepcioner", "sifraNeka123", StrucnaSprema.VISOKA, "20");
 		AdminManager.getInstance().dodajZaposlenog("Recepcioner", "Nikola", "Nikolic", "Musko","1986-11-23", "1123545455", "Dunavska 14", "nikolaRecepcioner", "sifraNekaL123", StrucnaSprema.SREDNJA, "20");
 		AdminManager.getInstance().dodajZaposlenog("Sobarica", "Jana", "Janic", "Zensko","1986-11-23", "1123545455", "Dunavska 14", "janaSobarica", "sifraJana123", StrucnaSprema.OSNOVNA, "20");
-	
+		AdminManager.getInstance().dodajZaposlenog("Sobarica", "Jana", "Janic", "Zensko","1986-11-23", "1123545455", "Dunavska 14", "saraSobarica", "sifraSara123", StrucnaSprema.OSNOVNA, "20");
+		AdminManager.getInstance().dodajZaposlenog("Sobarica", "Jana", "Janic", "Zensko","1986-11-23", "1123545455", "Dunavska 14", "lanaSobarica", "sifraLana123", StrucnaSprema.OSNOVNA, "20");
+		
 		AdminManager.getInstance().otpustiZaposlenog("nikolaRecepcioner");
 		
 		

@@ -311,13 +311,6 @@ public class RecepcionerViews extends JFrame{
 		
 		TableRowSorter<RezervacijaTableModel> sorter = new TableRowSorter<>(model);
 		rezervacijeTable.setRowSorter(sorter);
-
-	    //sveRezPanel.add(filterPanel(sorter), BorderLayout.PAGE_END);
-	    
-	    /*JScrollPane scrollPaneTable = new JScrollPane(rezervacijeTable);
-	    scrollPaneTable.add(rezervacijeTable);
-	    
-		sveRezPanel.add(rezervacijeTable);*/
 		
 		JButton potvrdiButton = new JButton("Potvrdi");
 		potvrdiButton.addActionListener(new ActionListener() {
@@ -430,12 +423,6 @@ public class RecepcionerViews extends JFrame{
         scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         sveRezPanel.add(filterPanel(sorter), BorderLayout.PAGE_END);
-		/*sveRezPanel.add(buttonPanel, BorderLayout.PAGE_END);
-		
-		JScrollPane scrollPane = new JScrollPane(rezervacijeTable);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	    sveRezPanel.add(scrollPane, BorderLayout.CENTER);*/
-		
 		
 		return sveRezPanel;
 	}
@@ -583,7 +570,8 @@ public class RecepcionerViews extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Soba s = model.getSobe(sobeTable.getSelectedRow());
+					int modelRowIndex = sobeTable.convertRowIndexToModel(sobeTable.getSelectedRow());
+					Soba s = model.getSobe(modelRowIndex);
 					
 					String poruka = RecepcionerManager.getInstance().checkOUTProces(s);
 					JOptionPane.showMessageDialog(sobePanel, poruka);
@@ -598,63 +586,6 @@ public class RecepcionerViews extends JFrame{
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(checkOut);
 		sobePanel.add(buttonPanel, BorderLayout.PAGE_START);
-		/*HashMap<Integer, Soba> sobe = SobaManager.sobe;
-
-		
-		
-		JPanel sobeListaPanel = new JPanel(new GridLayout(sobe.size(),2));
-		
-		for(Soba s:sobe.values()) {
-			JLabel sifraSobe = new JLabel(Integer.toString(s.getSifra()));
-			JLabel tipSobe = new JLabel(s.getNazivSobe());
-			JLabel statusSobe = new JLabel(s.getStatus().toString());
-			
-			JButton checkOut = new JButton("Check Out");
-			JButton dodaciSobe = new JButton("Amenities");
-			
-			sobeListaPanel.add(sifraSobe);
-			sobeListaPanel.add(tipSobe);
-			sobeListaPanel.add(statusSobe);
-			sobeListaPanel.add(dodaciSobe);
-			sobeListaPanel.add(checkOut);
-			
-			
-			dodaciSobe.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					JFrame dodaciFrame = new JFrame();
-					dodaciFrame.setTitle("Dodaci");
-					dodaciFrame.setSize(300,300);
-					dodaciFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-					
-					JPanel dodaciPanel = new JPanel();
-					for(String dodatak:s.getAmenities()) {
-						JLabel dodatakLabel = new JLabel(dodatak);
-						
-						dodaciPanel.add(dodatakLabel);
-					}
-					
-					dodaciFrame.add(dodaciPanel);
-					dodaciFrame.setVisible(true);
-					
-				}
-			});
-			
-			checkOut.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					String poruka = RecepcionerManager.getInstance().checkOUTProces(s);
-					JOptionPane.showMessageDialog(sobePanel, poruka);
-				}
-			});
-		}
-		
-		JScrollPane scrollPane = new JScrollPane(sobeListaPanel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        sobePanel.add(scrollPane, BorderLayout.CENTER);
-        
-        sobePanel.setMaximumSize(getMaximumSize());	*/
         
 		return sobePanel;
 	}
@@ -777,8 +708,6 @@ public class RecepcionerViews extends JFrame{
 		    public boolean include(Entry<? extends RezervacijaTableModel, ? extends Object> entry) {
 		        LocalDate date = (LocalDate) entry.getValue(3);
 		        StatusRezervacije sr = (StatusRezervacije) entry.getValue(6);
-		        //Soba s = (Soba) entry.getValue(2);
-		        // Compare the date with the current date
 		        return date.isAfter(LocalDate.now().minusDays(1)) && sr.equals(StatusRezervacije.POTVRDJENA) && entry.getValue(2)=="";
 		    }
 		};
@@ -803,7 +732,8 @@ public class RecepcionerViews extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
             	try {
-            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		int modelRowIndex = rezervacijeTable.convertRowIndexToModel(rezervacijeTable.getSelectedRow());
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(modelRowIndex);
             		
             		JFrame uslugeFrame = new JFrame("Usluge");
                     uslugeFrame.setSize(300, 300);
@@ -854,7 +784,8 @@ public class RecepcionerViews extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
             	try {
-            		Rezervacija rez = RezervacijaManager.rezervacije.get(rezervacijeTable.getSelectedRow());
+            		int modelRowIndex = rezervacijeTable.convertRowIndexToModel(rezervacijeTable.getSelectedRow());
+            		Rezervacija rez = RezervacijaManager.rezervacije.get(modelRowIndex);
             		JFrame checkInFrame = checkInFrame(rez);
             		checkInFrame.setVisible(true);
             		
@@ -1016,11 +947,18 @@ public class RecepcionerViews extends JFrame{
 		
 		ArrayList<Soba> sobe = SobaManager.getInstance().slobodneSobeCheckIn(rez.getTipSobe().getNaziv());
 		
+		if (sobe.size()==0){
+			JLabel sobeLabel = new JLabel("Nema slobodnih soba");
+			checkInPanel.add(sobeLabel);
+			checkInFrame.add(checkInPanel);
+			return checkInFrame;
+		}
 		for(Soba s:sobe) {
 			sobeComboBox.addItem(s.getSifra());
 		}
 		
 		JButton checkInujButton = new JButton("Check IN");
+		
 		checkInujButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

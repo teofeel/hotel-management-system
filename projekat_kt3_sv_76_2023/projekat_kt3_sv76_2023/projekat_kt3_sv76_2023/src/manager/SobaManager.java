@@ -38,6 +38,7 @@ public class SobaManager {
 		ArrayList<Soba> slobodne = new ArrayList<Soba>();
 		for(Soba s:this.sobe.values()) {
 			if(s.getStatus().equals(StatusSobe.SLOBODNA) && s.getNazivSobe().equals(tipSobe)) {
+				
 				slobodne.add(s);
 			}
 		}
@@ -50,7 +51,7 @@ public class SobaManager {
 		ArrayList<Soba> sobePoTipu = new ArrayList<Soba>();
 		
 		for (Soba soba : this.sobe.values()) {
-			if(soba.getNazivSobe().equals(tipSobeRezervacije.getNaziv()) && soba.getStatus().equals(StatusSobe.SLOBODNA)) {
+			if(soba.getNazivSobe().equals(tipSobeRezervacije.getNaziv()) && (soba.getStatus().equals(StatusSobe.SLOBODNA) || soba.getStatus().equals(StatusSobe.SPREMANJE))) {
 				sobePoTipu.add(soba);
 			}
 		}
@@ -196,7 +197,7 @@ public class SobaManager {
 				}
 			}
 			
-			if(soba.getNazivSobe().equals(tipSobe) && soba.getStatus().equals(StatusSobe.SLOBODNA) && br==0) {
+			if(soba.getNazivSobe().equals(tipSobe) && (soba.getStatus().equals(StatusSobe.SLOBODNA) || soba.getStatus().equals(StatusSobe.SPREMANJE)) && br==0) {
 				sobePoTipu.add(soba);
 			}
 		}

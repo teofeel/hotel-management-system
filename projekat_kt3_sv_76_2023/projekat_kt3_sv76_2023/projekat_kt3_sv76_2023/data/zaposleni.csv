@@ -2,3 +2,5 @@ Korisnicko Ime,Ime,Prezime,Pol,Datum Rodjenja,Telefon,Adresa,Lozinka,Tip,Strucna
 peraAdmin,Petar,Peric,Musko,1973-10-15,34387438,Neka Adresa 22,lozinka1,Administrator,Visoka sprema,10,2400.0
 mikaRecepcioner,Mika,Mikic,Musko,1986-11-23,1123545455,Dunavska 14,sifraNeka123,Recepcioner,Visoka sprema,20,4800.0
 janaSobarica,Jana,Janic,Zensko,1986-11-23,1123545455,Dunavska 14,sifraJana123,Sobarica,Osnovna sprema,20,1600.0
+lanaSobarica,Jana,Janic,Zensko,1986-11-23,1123545455,Dunavska 14,sifraLana123,Sobarica,Osnovna sprema,20,1600.0
+saraSobarica,Jana,Janic,Zensko,1986-11-23,1123545455,Dunavska 14,sifraSara123,Sobarica,Osnovna sprema,20,1600.0
